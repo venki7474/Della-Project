@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="673.0" prefWidth="861.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main_della.FXMLDocumentController">
+  <tabs>
+    <Tab text="Console">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="646.0" prefWidth="848.0">
+               <children>
+                  <AnchorPane layoutX="4.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="633.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <MenuButton layoutX="640.0" layoutY="108.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="181.0" text="Large to Small">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <MenuButton layoutX="640.0" layoutY="195.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="185.0" text="None">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <MenuButton layoutX="640.0" layoutY="259.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="188.0" text="None">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <MenuButton layoutX="645.0" layoutY="338.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="188.0" text="All Action Items">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <TextArea layoutX="37.0" layoutY="94.0" prefHeight="111.0" prefWidth="552.0" />
+      <Text layoutX="37.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Action Items:" />
+      <Text layoutX="634.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sorting Directions:" />
+      <Text layoutX="644.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="First Sorting Factor:" />
+      <Text layoutX="641.0" layoutY="258.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Second Sorting Factor:" />
+      <Text layoutX="643.0" layoutY="326.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Inclusion Factor:" />
+      <Text layoutX="35.0" layoutY="234.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selected Action Item:" />
+      <Text layoutX="37.0" layoutY="271.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name :" />
+      <Text layoutX="35.0" layoutY="310.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description :" />
+      <TextField layoutX="106.0" layoutY="250.0" prefHeight="39.0" prefWidth="224.0" />
+      <TextArea layoutX="37.0" layoutY="319.0" prefHeight="104.0" prefWidth="552.0" />
+      <Text layoutX="37.0" layoutY="455.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Resolution:" wrappingWidth="111.205078125" />
+      <TextArea layoutX="37.0" layoutY="465.0" prefHeight="116.0" prefWidth="552.0" />
+      <Text layoutX="620.0" layoutY="405.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dates:" />
+      <Text layoutX="620.0" layoutY="430.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Creation Date:" />
+      <Text layoutX="624.0" layoutY="466.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Due:" />
+      <TextField layoutX="666.0" layoutY="440.0" prefHeight="39.0" prefWidth="170.0" />
+      <Label layoutX="739.0" layoutY="410.0" prefHeight="27.0" prefWidth="111.0" text="2015-12-08" />
+      <Separator layoutY="50.0" prefHeight="3.0" prefWidth="859.0" />
+      <Text layoutX="619.0" layoutY="499.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Action Item :" />
+      <Text layoutX="618.0" layoutY="547.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Assigned to Member" />
+      <Text layoutX="621.0" layoutY="603.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Assigned to Team :" />
+      <Text layoutX="641.0" layoutY="520.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status :" />
+      <Label layoutX="710.0" layoutY="500.0" text="Open" />
+      <Label layoutX="643.0" layoutY="557.0" text="Label" />
+      <Label layoutX="645.0" layoutY="606.0" text="Label" />
+      <Label layoutX="23.0" layoutY="593.0" prefHeight="27.0" prefWidth="313.0" text="Copyright©2015 Venkatesh Ejjagiri" />
+                        <Text layoutX="383.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Console">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Text>
+                        <Button layoutX="792.0" layoutY="2.0" mnemonicParsing="false" onAction="#quitAction" text="Quit" />
+   </children>
+</AnchorPane>
+
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="Action Items">
+      <content>
+       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="637.0" prefWidth="868.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <MenuButton layoutX="230.0" layoutY="198.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="162.0" text="Large to Small">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <MenuButton layoutX="426.0" layoutY="197.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="162.0" text="None">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <MenuButton layoutX="620.0" layoutY="197.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="190.0" text="None">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <MenuButton layoutX="30.0" layoutY="197.0" mnemonicParsing="false" text="All Action Items">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <Text layoutX="20.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Action Items:" />
+      <Text layoutX="227.0" layoutY="188.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sorting Directions:" />
+      <Text layoutX="426.0" layoutY="188.0" strokeType="OUTSIDE" strokeWidth="0.0" text="First Sorting Factor:" />
+      <Text layoutX="618.0" layoutY="188.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Second Sorting Factor:" />
+      <Text layoutX="31.0" layoutY="188.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Inclusion Factor:" />
+      <Text layoutX="33.0" layoutY="266.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selected Action Item:" />
+      <Text layoutX="33.0" layoutY="299.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name :" />
+      <Text layoutX="33.0" layoutY="327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description :" />
+      <TextField fx:id="itemName" layoutX="115.0" layoutY="272.0" prefHeight="39.0" prefWidth="473.0" />
+      <TextArea fx:id="itemDesc" layoutX="35.0" layoutY="333.0" prefHeight="75.0" prefWidth="552.0" />
+      <Text layoutX="29.0" layoutY="455.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Resolution:" wrappingWidth="111.205078125" />
+      <TextArea fx:id="itemResolution" layoutX="34.0" layoutY="459.0" prefHeight="84.0" prefWidth="552.0" />
+      <Text layoutX="619.0" layoutY="287.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dates:" />
+      <Text layoutX="619.0" layoutY="314.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Creation Date:" />
+      <Text layoutX="624.0" layoutY="352.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Due:" />
+      <TextField fx:id="dueDate" layoutX="668.0" layoutY="326.0" prefHeight="39.0" prefWidth="172.0" />
+      <Label layoutX="742.0" layoutY="294.0" prefHeight="27.0" prefWidth="111.0" text="2015-12-08" />
+      <Separator layoutX="-2.0" layoutY="44.0" prefHeight="4.0" prefWidth="872.0" />
+      <Text layoutX="626.0" layoutY="393.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Action Item :" />
+      <Text layoutX="622.0" layoutY="466.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Assigned to Member" />
+      <Text layoutX="619.0" layoutY="527.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Assigned to Team :" />
+      <Text layoutX="625.0" layoutY="428.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status :" />
+      <Label layoutX="705.0" layoutY="408.0" text="Open" />
+      <Label layoutX="633.0" layoutY="480.0" text="Label" />
+      <Label layoutX="633.0" layoutY="540.0" text="Label" />
+      <ComboBox layoutX="20.0" layoutY="79.0" prefHeight="39.0" prefWidth="788.0" />
+      <Text layoutX="26.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select an action item from the pull down list above to examine and update it" wrappingWidth="628.39453125" />
+      <ToolBar layoutX="14.0" layoutY="560.0" prefHeight="71.0" prefWidth="838.0">
+        <items>
+          <Button mnemonicParsing="false" prefHeight="39.0" prefWidth="226.0" text="Update this action item" />
+            <Button mnemonicParsing="false" prefHeight="39.0" prefWidth="171.0" text="Clear this form" />
+            <Button fx:id="createItem" mnemonicParsing="false" onAction="#createActionItem" prefHeight="39.0" prefWidth="209.0" text="Create new Action Item" />
+            <Button mnemonicParsing="false" prefHeight="39.0" prefWidth="175.0" text="Delete this item" />
+        </items>
+      </ToolBar>
+                  <Text layoutX="380.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Action Items">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Text>
+                  <Button layoutX="796.0" layoutY="2.0" mnemonicParsing="false" onAction="#quitAction" text="Quit" />
+   </children>
+</AnchorPane>
+
+      </content>
+    </Tab>
+      <Tab text="Members">
+        <content>
+          <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="623.0" prefWidth="860.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Text layoutX="402.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Members">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Text>
+      <TextField layoutX="12.0" layoutY="79.0" prefHeight="39.0" prefWidth="240.0" />
+      <Label layoutX="11.0" layoutY="50.0" prefHeight="18.0" prefWidth="277.0" text="Name of someone new(Last,First,Middle)">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Button layoutX="379.0" layoutY="84.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="167.0" text="Add to List--&gt;">
+         <textFill>
+            <LinearGradient endX="1.0" endY="1.0" startX="0.719047619047619">
+               <stops>
+                  <Stop color="BLACK" />
+                  <Stop color="#333333" offset="1.0" />
+               </stops>
+            </LinearGradient>
+         </textFill>
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Button>
+      <Button layoutX="377.0" layoutY="140.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="169.0" text="&lt;--Remove from List">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Button>
+      <Text layoutX="399.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Click on a team's name" wrappingWidth="156.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
+      <Text layoutX="377.0" layoutY="239.0" strokeType="OUTSIDE" strokeWidth="0.0" text="to see member associations" wrappingWidth="202.0">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
+      <Text layoutX="585.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Individuals known by Della">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <TextArea layoutX="7.0" layoutY="423.0" prefHeight="182.0" prefWidth="364.0" />
+      <Text layoutX="14.0" layoutY="411.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Available teams for:">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <Button layoutX="389.0" layoutY="459.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="156.0" text="Add  Affiliation --&gt;">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Button>
+      <Button layoutX="390.0" layoutY="536.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="156.0" text="&lt;-- Remove affiliation">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Button>
+      <TextArea layoutX="553.0" layoutY="420.0" prefHeight="180.0" prefWidth="296.0" />
+      <Text layoutX="557.0" layoutY="413.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current teams for" wrappingWidth="142.943359375">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <Text layoutX="498.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To remove a team affiliation for an individual:">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <Label layoutX="497.0" layoutY="304.0" text="1. Click on the name of the individual above." />
+      <Label layoutX="497.0" layoutY="335.0" text="2. Click on a team name in the list below." />
+      <Label layoutX="498.0" layoutY="367.0" text="3. Click on &quot;Remove association&quot; button." />
+      <Text layoutX="15.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To add a name to the list:" wrappingWidth="237.0">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <Text layoutX="14.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Click on the box above." />
+      <Text layoutX="14.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Type the name." />
+      <Text layoutX="14.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3. Click the &quot;Add to List&quot; button." />
+      <Text layoutX="14.0" layoutY="253.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To remove a name form the list:">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <Text layoutX="14.0" layoutY="276.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Click on the name to remove." />
+      <Text layoutX="14.0" layoutY="293.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Click on &quot;Remove from List&quot; button." />
+      <Text layoutX="14.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To add a team affiliation for an individual:">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <Text layoutX="14.0" layoutY="344.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Click on the name of the team above right." />
+      <Text layoutX="14.0" layoutY="361.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Click on a member name in the list below." />
+      <Text layoutX="14.0" layoutY="378.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3 Click on &quot;Add affiliation&quot; button." />
+      <ImageView fitHeight="108.0" fitWidth="49.0" layoutX="188.0" layoutY="132.0" pickOnBounds="true" preserveRatio="true" />
+      <Separator layoutX="3.0" layoutY="46.0" prefHeight="0.0" prefWidth="872.0" />
+      <ComboBox layoutX="580.0" layoutY="98.0" prefHeight="39.0" prefWidth="244.0" />
+                  <Button layoutX="798.0" layoutY="1.0" mnemonicParsing="false" onAction="#quitAction" text="Quit" />
+                  <Label layoutX="702.0" layoutY="398.0" prefHeight="22.0" prefWidth="38.0" text="Name" />
+                  <Label layoutX="175.0" layoutY="396.0" text="Name" />
+   </children>
+</AnchorPane>
+
+        </content>
+      </Tab>
+      <Tab text="Teams">
+        <content>
+          <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="634.0" prefWidth="859.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Text layoutX="416.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Teams">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Text>
+      <TextField layoutX="14.0" layoutY="96.0" prefHeight="39.0" prefWidth="202.0" />
+      <Label layoutX="14.0" layoutY="60.0" text="Name of a new team">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font></Label>
+      <Button layoutX="363.0" layoutY="98.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="156.0" text="Add to List--&gt;">
+         <textFill>
+            <LinearGradient endX="1.0" endY="1.0" startX="0.719047619047619">
+               <stops>
+                  <Stop color="BLACK" />
+                  <Stop color="#333333" offset="1.0" />
+               </stops>
+            </LinearGradient>
+         </textFill>
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Button>
+      <Button layoutX="364.0" layoutY="150.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="156.0" text="&lt;--Remove from List">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
+      </Button>
+      <Text layoutX="383.0" layoutY="211.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Click on a team's name" wrappingWidth="156.0">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Text>
+      <Text layoutX="376.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="to see member associations" wrappingWidth="170.0">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Text>
+      <TextArea layoutX="554.0" layoutY="93.0" prefHeight="177.0" prefWidth="279.0" />
+      <Text layoutX="580.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Teams known by Della" wrappingWidth="226.83203125">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font></Text>
+      <TextArea layoutX="7.0" layoutY="444.0" prefHeight="175.0" prefWidth="319.0" />
+      <Text layoutX="14.0" layoutY="411.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Available members for team">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font></Text>
+      <Button layoutX="335.0" layoutY="453.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="181.0" text="Add association --&gt;">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+      <Button layoutX="335.0" layoutY="526.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="181.0" text="&lt;-- Remove association">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+      <TextArea layoutX="523.0" layoutY="448.0" prefHeight="172.0" prefWidth="327.0" />
+      <Text layoutX="474.0" layoutY="421.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current members for team:">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font></Text>
+      <Text layoutX="469.0" layoutY="310.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To remove a member association for a team:">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font></Text>
+      <Label layoutX="471.0" layoutY="318.0" text="1. Click on the name of the team above." />
+      <Label layoutX="473.0" layoutY="348.0" text="2. Click on a member name in the list below." />
+      <Label layoutX="473.0" layoutY="372.0" text="3. Click on &quot;Remove association&quot; button." />
+      <Text layoutX="10.0" layoutY="155.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To add a name to the list:" wrappingWidth="212.0">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <Text layoutX="14.0" layoutY="184.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Click on the box above." />
+      <Text layoutX="14.0" layoutY="203.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Type the name." />
+      <Text layoutX="13.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3. Click the &quot;Add to List&quot; button." />
+      <Text layoutX="14.0" layoutY="253.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To remove a name form the list:">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <Text layoutX="14.0" layoutY="276.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Click on the name to remove." />
+      <Text layoutX="14.0" layoutY="293.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Click on &quot;Remove from List&quot; button." />
+      <Text layoutX="14.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To add a member association for a team:">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <Text layoutX="14.0" layoutY="344.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Click on the name of the team above right." />
+      <Text layoutX="14.0" layoutY="361.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Click on a member name in the list below." />
+      <Text layoutX="14.0" layoutY="378.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3 Click on &quot;Add association&quot; button." />
+      <ImageView fitHeight="108.0" fitWidth="49.0" layoutX="301.0" layoutY="95.0" pickOnBounds="true" preserveRatio="true" />
+      <Separator layoutY="35.0" prefHeight="17.0" prefWidth="864.0" />
+                  <Button layoutX="792.0" layoutY="1.0" mnemonicParsing="false" onAction="#quitAction" text="Quit" />
+                  <Label layoutX="17.0" layoutY="417.0" text="Team" />
+                  <Label layoutX="533.0" layoutY="428.0" text="Team" />
+   </children>
+</AnchorPane>
+
+        </content>
+      </Tab>
+  </tabs>
+</TabPane>
