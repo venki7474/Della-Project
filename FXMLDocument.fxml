@@ -137,7 +137,7 @@
       <Label layoutX="705.0" layoutY="408.0" text="Open" />
       <Label layoutX="633.0" layoutY="480.0" text="Label" />
       <Label layoutX="633.0" layoutY="540.0" text="Label" />
-      <ComboBox layoutX="20.0" layoutY="79.0" prefHeight="39.0" prefWidth="788.0" />
+      <ComboBox fx:id="actionItemCombo" layoutX="20.0" layoutY="79.0" onAction="#onActionCombo" prefHeight="39.0" prefWidth="788.0" />
       <Text layoutX="26.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select an action item from the pull down list above to examine and update it" wrappingWidth="628.39453125" />
       <ToolBar layoutX="14.0" layoutY="560.0" prefHeight="71.0" prefWidth="838.0">
         <items>
