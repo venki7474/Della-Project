@@ -9,11 +9,15 @@ import static java.lang.System.exit;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -23,6 +27,7 @@ import javafx.scene.control.TextField;
  * @author Chotu
  */
 public class FXMLDocumentController implements Initializable {
+    ObservableList<String> itemsList = FXCollections.observableArrayList();
     @FXML
     private TextArea itemDesc, itemResolution;
     
@@ -30,7 +35,7 @@ public class FXMLDocumentController implements Initializable {
     private TextField itemName, dueDate;
     
     @FXML
-    private Label label;
+    private ComboBox<String> actionItemCombo = new ComboBox<String>(itemsList);
     
     @FXML
     private void createActionItem(ActionEvent event) {
@@ -53,16 +58,59 @@ public class FXMLDocumentController implements Initializable {
         }catch(Exception e) {
             System.out.println(e);
         }
+        actionItemCombo.setItems(itemsList);
     }
     
     @FXML
     private void quitAction(ActionEvent event){
         exit(0);
     }
+    @FXML
+    private void onActionCombo(ActionEvent event){
+         try {
+            Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sample", "root", "venki_7474");
+            Statement myStmt = myConn.createStatement();
+            ResultSet myRs = myStmt.executeQuery("Select * from item_sample");
+            String selectedItem = (String)actionItemCombo.getSelectionModel().getSelectedItem();
+            while (myRs.next()) {
+//                itemsList.add(myRs.getString("name"));
+                if (selectedItem.equals(myRs.getString("name"))){
+                    itemName.setText(myRs.getString("name"));
+                    itemDesc.setText(myRs.getString("description"));
+                    itemResolution.setText(myRs.getString("resolution"));
+                    dueDate.setText(myRs.getString("duedate"));
+                }
+                    
+            }
+//            actionItemCombo.setItems(itemsList);
+//            System.out.println("inserted");
+        }catch(Exception e){
+            System.out.println(e);
+        }
+    }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        try {
+            //1. Get a connection to database
+            Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sample", "root", "venki_7474");
+            //2.create statement
+            Statement myStmt = myConn.createStatement();
+            //3.Execute SQL query
+            ResultSet myRs = myStmt.executeQuery("Select * from item_sample");
+
+            //4.Process the result set
+            while (myRs.next()) {
+                itemsList.add(myRs.getString("name"));
+//                System.out.println(myRs.getString("name") );
+            }
+            actionItemCombo.setItems(itemsList);
+//            System.out.println("inserted");
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        
     }    
     
 }
