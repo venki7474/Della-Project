@@ -261,10 +261,10 @@
       <Text layoutX="14.0" layoutY="378.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3 Click on &quot;Add affiliation&quot; button." />
       <ImageView fitHeight="108.0" fitWidth="49.0" layoutX="188.0" layoutY="132.0" pickOnBounds="true" preserveRatio="true" />
       <Separator layoutX="3.0" layoutY="46.0" prefHeight="0.0" prefWidth="872.0" />
-      <ComboBox layoutX="580.0" layoutY="98.0" prefHeight="39.0" prefWidth="244.0" />
                   <Button layoutX="798.0" layoutY="1.0" mnemonicParsing="false" onAction="#quitAction" text="Quit" />
                   <Label layoutX="702.0" layoutY="398.0" prefHeight="22.0" prefWidth="38.0" text="Name" />
                   <Label layoutX="175.0" layoutY="396.0" text="Name" />
+                  <TextArea layoutX="586.0" layoutY="77.0" prefHeight="176.0" prefWidth="246.0" />
    </children>
 </AnchorPane>
 
