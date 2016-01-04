@@ -11,12 +11,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -63,13 +67,35 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private void quitAction(ActionEvent event){
-        exit(0);
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+       alert.setTitle("Confirmation");
+       String s = "A Quit has been requested and there are updated Action Items that have not been saved!";
+       alert.setHeaderText(s);
+       alert.setContentText("Do you want to save these Action Items? Click Ok to save or Click Cancel to ignore Changes");
+       Optional<ButtonType> result = alert.showAndWait();
+       try{
+        Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sample", "root", "venki_7474");
+        Statement myStmt = myConn.createStatement();
+       if (result.get() == ButtonType.OK){     
+            myStmt.executeUpdate("truncate items");
+            myStmt.executeUpdate("insert into items select * from item_sample;");
+            myStmt.executeUpdate("truncate item_sample");
+           exit(0);
+       } 
+       else {
+           myStmt.executeUpdate("truncate item_sample");
+           exit(0);
+        }
+    }catch(Exception e){
+               System.out.println(e);
+           }
     }
     @FXML
     private void onActionCombo(ActionEvent event){
          try {
             Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sample", "root", "venki_7474");
             Statement myStmt = myConn.createStatement();
+            
             ResultSet myRs = myStmt.executeQuery("Select * from item_sample");
             String selectedItem = (String)actionItemCombo.getSelectionModel().getSelectedItem();
             while (myRs.next()) {
@@ -98,6 +124,7 @@ public class FXMLDocumentController implements Initializable {
             //2.create statement
             Statement myStmt = myConn.createStatement();
             //3.Execute SQL query
+            myStmt.executeUpdate("insert into item_sample select * from items;");
             ResultSet myRs = myStmt.executeQuery("Select * from item_sample");
 
             //4.Process the result set
