@@ -48,21 +48,18 @@ public class FXMLDocumentController implements Initializable {
             String desc = itemDesc.getText();
             String resolution = itemResolution.getText();
             String duedate = dueDate.getText();
-            //1. Getting a connection to database
-            Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sample", "root", "venki_7474");
-            //2.creating the  statement
-            Statement myStmt = myConn.createStatement();
-            //3.Executing the SQL query
-
+            Connector conn = new Connector();
+            conn.myStmt = conn.myConn.createStatement();
             String sql = "insert into item_sample"
                     + "(name, description, resolution, duedate)" 
                     + "values('" +name+ "','" +desc+ "','" + resolution + "','" + duedate + "')";
-            myStmt.executeUpdate(sql);
+            conn.myStmt.executeUpdate(sql);
             System.out.println("Item created");
         }catch(Exception e) {
             System.out.println(e);
         }
-        actionItemCombo.setItems(itemsList);
+//        actionItemCombo.setItems(itemsList);
+        refresh();
     }
     
     @FXML
@@ -74,16 +71,16 @@ public class FXMLDocumentController implements Initializable {
        alert.setContentText("Do you want to save these Action Items? Click Ok to save or Click Cancel to ignore Changes");
        Optional<ButtonType> result = alert.showAndWait();
        try{
-        Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sample", "root", "venki_7474");
-        Statement myStmt = myConn.createStatement();
+        Connector connection = new Connector();
+        connection.myStmt = connection.myConn.createStatement();
        if (result.get() == ButtonType.OK){     
-            myStmt.executeUpdate("truncate items");
-            myStmt.executeUpdate("insert into items select * from item_sample;");
-            myStmt.executeUpdate("truncate item_sample");
+            connection.myStmt.executeUpdate("truncate items");
+            connection.myStmt.executeUpdate("insert into items select * from item_sample;");
+            connection.myStmt.executeUpdate("truncate item_sample");
            exit(0);
        } 
        else {
-           myStmt.executeUpdate("truncate item_sample");
+           connection.myStmt.executeUpdate("truncate item_sample");
            exit(0);
         }
     }catch(Exception e){
@@ -93,10 +90,10 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void onActionCombo(ActionEvent event){
          try {
-            Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sample", "root", "venki_7474");
-            Statement myStmt = myConn.createStatement();
+            Connector conn = new Connector();
+            conn.myStmt = conn.myConn.createStatement();
             
-            ResultSet myRs = myStmt.executeQuery("Select * from item_sample");
+            ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample");
             String selectedItem = (String)actionItemCombo.getSelectionModel().getSelectedItem();
             while (myRs.next()) {
 //                itemsList.add(myRs.getString("name"));
@@ -108,32 +105,49 @@ public class FXMLDocumentController implements Initializable {
                 }
                     
             }
+            
 //            actionItemCombo.setItems(itemsList);
 //            System.out.println("inserted");
         }catch(Exception e){
             System.out.println(e);
         }
     }
-    
+    public void refresh(){
+        try {
+            Connector conn = new Connector();
+            conn.myStmt = conn.myConn.createStatement();
+            ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample");
+            while (myRs.next()) {
+                itemsList.add(myRs.getString("name"));
+            }
+            actionItemCombo.setItems(itemsList);
+        }catch(Exception e){
+            System.out.println(e);
+        }
+    }
+    @FXML
+    private void deleteActionItem(ActionEvent event){
+        try{
+            Connector conn = new Connector();
+            conn.myStmt = conn.myConn.createStatement();
+            String selectedItem = (String)actionItemCombo.getSelectionModel().getSelectedItem();
+            conn.myStmt.executeUpdate("delete from item_sample where name = '"+selectedItem+"';");
+        }catch(Exception e){
+               System.out.println(e);
+           }
+    }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         try {
-            //1. Get a connection to database
-            Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sample", "root", "venki_7474");
-            //2.create statement
-            Statement myStmt = myConn.createStatement();
-            //3.Execute SQL query
-            myStmt.executeUpdate("insert into item_sample select * from items;");
-            ResultSet myRs = myStmt.executeQuery("Select * from item_sample");
-
-            //4.Process the result set
+            Connector conn = new Connector();
+            conn.myStmt = conn.myConn.createStatement();
+            conn.myStmt.executeUpdate("insert into item_sample select * from items;");
+            ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample");
             while (myRs.next()) {
                 itemsList.add(myRs.getString("name"));
-//                System.out.println(myRs.getString("name") );
             }
             actionItemCombo.setItems(itemsList);
-//            System.out.println("inserted");
         }catch(Exception e){
             System.out.println(e);
         }
