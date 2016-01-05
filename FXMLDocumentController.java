@@ -39,6 +39,7 @@ public class FXMLDocumentController implements Initializable {
     DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     Calendar cal = Calendar.getInstance();
     Date dateobj = cal.getTime();
+    
     @FXML
     private TextArea itemDesc, itemResolution;
     
@@ -50,6 +51,35 @@ public class FXMLDocumentController implements Initializable {
     
     @FXML
     private ComboBox<String> actionItemCombo = new ComboBox<String>(itemsList);
+    
+    @FXML
+    private void updateAction(ActionEvent event){
+        try {
+            Connector conn = new Connector();
+            conn.myStmt = conn.myConn.createStatement();
+            String name = itemName.getText();
+            String desc = itemDesc.getText();
+            String resolution = itemResolution.getText();
+            String duedate = dueDate.getText();
+            String selectedItem = (String)actionItemCombo.getSelectionModel().getSelectedItem();
+            conn.myStmt.executeUpdate("delete from item_sample where name = '"+selectedItem+"';");
+            String sql = "insert into item_sample"
+                    + "(name, description, resolution, duedate)" 
+                    + "values('" +name+ "','" +desc+ "','" + resolution + "','" + duedate + "')";
+            conn.myStmt.executeUpdate(sql);
+            refresh();
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        
+    }
+    @FXML
+    private void clearFormAction(ActionEvent event){
+        itemName.setText("");
+        itemDesc.setText("");
+        itemResolution.setText("");
+        dueDate.setText("");
+    }
     
     @FXML
     private void createActionItem(ActionEvent event) {
@@ -71,33 +101,70 @@ public class FXMLDocumentController implements Initializable {
 //        actionItemCombo.setItems(itemsList);
         refresh();
     }
+    
     @FXML
-    private void updateAction(ActionEvent event){
-        try {
+    private void deleteActionItem(ActionEvent event){
+        try{
             Connector conn = new Connector();
             conn.myStmt = conn.myConn.createStatement();
-            String name = itemName.getText();
-            String desc = itemDesc.getText();
-            String resolution = itemResolution.getText();
-            String duedate = dueDate.getText();
             String selectedItem = (String)actionItemCombo.getSelectionModel().getSelectedItem();
             conn.myStmt.executeUpdate("delete from item_sample where name = '"+selectedItem+"';");
-            String sql = "insert into item_sample"
-                    + "(name, description, resolution, duedate)" 
-                    + "values('" +name+ "','" +desc+ "','" + resolution + "','" + duedate + "')";
-            conn.myStmt.executeUpdate(sql);
+            refresh();
+            itemName.setText("");
+            itemDesc.setText("");
+            itemResolution.setText("");
+            dueDate.setText("");
+        }catch(Exception e){
+               System.out.println(e);
+           }
+    }
+    
+    @FXML
+    private void onActionCombo(ActionEvent event){
+         try {
+            Connector conn = new Connector();
+            conn.myStmt = conn.myConn.createStatement();
+            
+            ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample");
+            String selectedItem = (String)actionItemCombo.getSelectionModel().getSelectedItem();
+            if (selectedItem.equals("")){
+                    itemName.setText("");
+                    itemDesc.setText("");
+                    itemResolution.setText("");
+                    dueDate.setText("");
+            }else {
+                while (myRs.next()) {
+//                itemsList.add(myRs.getString("name"));
+                    if (selectedItem.equals(myRs.getString("name"))){
+                        itemName.setText(myRs.getString("name"));
+                        itemDesc.setText(myRs.getString("description"));
+                        itemResolution.setText(myRs.getString("resolution"));
+                        dueDate.setText(myRs.getString("duedate"));
+                    } 
+                }
+            }
+//            actionItemCombo.setItems(itemsList);
+//            System.out.println("inserted");
         }catch(Exception e){
             System.out.println(e);
         }
-        
     }
-    @FXML
-    private void clearFormAction(ActionEvent event){
-        itemName.setText("");
-        itemDesc.setText("");
-        itemResolution.setText("");
-        dueDate.setText("");
+    public void refresh(){
+        try {
+            Connector conn = new Connector();
+            conn.myStmt = conn.myConn.createStatement();
+            ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample");
+            itemsList = FXCollections.observableArrayList();
+            itemsList.add("");
+            while (myRs.next()) {
+                itemsList.add(myRs.getString("name"));
+            }
+            actionItemCombo.setItems(itemsList);
+        }catch(Exception e){
+            System.out.println(e);
+        }
     }
+    
     @FXML
     private void quitAction(ActionEvent event){
        Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -123,63 +190,8 @@ public class FXMLDocumentController implements Initializable {
                System.out.println(e);
            }
     }
-    @FXML
-    private void onActionCombo(ActionEvent event){
-         try {
-            Connector conn = new Connector();
-            conn.myStmt = conn.myConn.createStatement();
-            
-            ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample");
-            String selectedItem = (String)actionItemCombo.getSelectionModel().getSelectedItem();
-            if (selectedItem.equals("")){
-                    itemName.setText("");
-                    itemDesc.setText("");
-                    itemResolution.setText("");
-                    dueDate.setText("");
-            }else {
-                while (myRs.next()) {
-//                itemsList.add(myRs.getString("name"));
-                    if (selectedItem.equals(myRs.getString("name"))){
-                        itemName.setText(myRs.getString("name"));
-                        itemDesc.setText(myRs.getString("description"));
-                        itemResolution.setText(myRs.getString("resolution"));
-                        dueDate.setText(myRs.getString("duedate"));
-                    } 
-                }
-            }
-            
-//            actionItemCombo.setItems(itemsList);
-//            System.out.println("inserted");
-        }catch(Exception e){
-            System.out.println(e);
-        }
-    }
-    public void refresh(){
-        try {
-            Connector conn = new Connector();
-            conn.myStmt = conn.myConn.createStatement();
-            ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample");
-            itemsList = FXCollections.observableArrayList();
-            itemsList.add("");
-            while (myRs.next()) {
-                itemsList.add(myRs.getString("name"));
-            }
-            actionItemCombo.setItems(itemsList);
-        }catch(Exception e){
-            System.out.println(e);
-        }
-    }
-    @FXML
-    private void deleteActionItem(ActionEvent event){
-        try{
-            Connector conn = new Connector();
-            conn.myStmt = conn.myConn.createStatement();
-            String selectedItem = (String)actionItemCombo.getSelectionModel().getSelectedItem();
-            conn.myStmt.executeUpdate("delete from item_sample where name = '"+selectedItem+"';");
-        }catch(Exception e){
-               System.out.println(e);
-           }
-    }
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
@@ -197,7 +209,5 @@ public class FXMLDocumentController implements Initializable {
         }catch(Exception e){
             System.out.println(e);
         }
-        
     }    
-    
 }
