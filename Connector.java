@@ -7,13 +7,14 @@ package main_della;
 
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.sql.Connection;
 
 /**
  *
  * @author Venkatesh Ejjagiri
  */
 public class Connector {
-    public java.sql.Connection myConn;
+    public Connection myConn;
     public Statement myStmt;
     public Connector(){
         try {
