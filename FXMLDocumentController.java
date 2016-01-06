@@ -7,10 +7,7 @@ package main_della;
 
 import static java.lang.System.exit;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,8 +24,10 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.text.TextFlow;
 
 /**
  *
@@ -190,24 +189,102 @@ public class FXMLDocumentController implements Initializable {
                System.out.println(e);
            }
     }
-    
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         try {
             Connector conn = new Connector();
-            conn.myStmt = conn.myConn.createStatement();
+//            conn.myStmt = conn.myConn.createStatement();
             conn.myStmt.executeUpdate("insert into item_sample select * from items;");
             ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample");
             itemsList = FXCollections.observableArrayList();
             while (myRs.next()) {
                 itemsList.add(myRs.getString("name"));
+                consoleList.add(myRs.getString("name"));
             }
             actionItemCombo.setItems(itemsList);
+//            for (int i = 0; i < consoleList.size(); i ++ ){
+//                consoleItems.setText(consoleList.get(i));
+//            }
             currentDate.setText(format.format(dateobj));
+            getMembers();
+            
         }catch(Exception e){
             System.out.println(e);
         }
-    }    
+    }
+/*
+    the below code is for cosole
+    */  
+        @FXML
+        private TextFlow consoleItems;
+        
+        ObservableList<String> consoleList = FXCollections.observableArrayList();
+        
+    /*
+    this is for members    
+    */
+        @FXML
+        private TextField member;
+        @FXML 
+        private ListView membersView;
+        
+        ObservableList<String> membersList = FXCollections.observableArrayList();
+        
+        @FXML
+        public void addToList(ActionEvent event ){
+            String memb = member.getText();
+            try{
+                Connector conn = new Connector();
+                String sql = "insert into members"
+                        + "(membname)" 
+                        + "values('" + memb + "');";   
+                conn.myStmt.executeUpdate(sql);
+                getMembers();
+            } catch(Exception e){
+                System.err.println(e);
+            }
+        }
+        @FXML
+        public void removeMember(ActionEvent event){
+            String selectedMember = (String)membersView.getSelectionModel().getSelectedItem();
+            try {
+                Connector conn = new Connector();
+                String sql = "delete from members where membname= '"+selectedMember+"';";
+                conn.myStmt.executeUpdate(sql);
+                getMembers();
+            }catch(Exception e){
+                System.out.println(e);
+            }
+
+        }
+//        String selecMem = (String)membersView.getSelectionModel().getSelectedItem();
+        @FXML 
+        private Label selectedMember;
+        private Label selectedMember2;
+
+        
+//        String selecMem = (String)membersView.getSelectionModel().getSelectedItem();
+//        @FXML
+//        public void onActionMembers(ActionEvent event){
+//            String selectedMem = (String)membersView.getSelectionModel().getSelectedItem();
+//            selectedMember.setText(selectedMem);
+//            selectedMember2.setText(selectedMem);
+
+//        }
+        public void getMembers(){
+            try {
+                 Connector conn = new Connector();
+                 String sql = "select membname from members; ";
+                 ResultSet myRes = conn.myStmt.executeQuery(sql);
+                 membersList = FXCollections.observableArrayList();
+                 while(myRes.next()){
+                     membersList.add(myRes.getString("membname"));
+                 }
+                 membersView.setItems(membersList);
+            }catch(Exception e){
+                System.err.println(e);
+            }
+        }
+
 }
