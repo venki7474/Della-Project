@@ -214,11 +214,8 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 /*
-    the below code is for cosole
+    the below code is for console
     */  
-        @FXML
-        private TextFlow consoleItems;
-        
         ObservableList<String> consoleList = FXCollections.observableArrayList();
         
     /*
@@ -237,7 +234,7 @@ public class FXMLDocumentController implements Initializable {
             try{
                 Connector conn = new Connector();
                 String sql = "insert into members"
-                        + "(membname)" 
+                        + "(member)" 
                         + "values('" + memb + "');";   
                 conn.myStmt.executeUpdate(sql);
                 getMembers();
@@ -250,7 +247,7 @@ public class FXMLDocumentController implements Initializable {
             String selectedMember = (String)membersView.getSelectionModel().getSelectedItem();
             try {
                 Connector conn = new Connector();
-                String sql = "delete from members where membname= '"+selectedMember+"';";
+                String sql = "delete from members where member= '"+selectedMember+"';";
                 conn.myStmt.executeUpdate(sql);
                 getMembers();
             }catch(Exception e){
@@ -258,28 +255,50 @@ public class FXMLDocumentController implements Initializable {
             }
 
         }
-//        String selecMem = (String)membersView.getSelectionModel().getSelectedItem();
-        @FXML 
-        private Label selectedMember;
-        private Label selectedMember2;
 
+        ObservableList<String> teamsLeft = FXCollections.observableArrayList();
+        ObservableList<String> teamsRight = FXCollections.observableArrayList();
         
-//        String selecMem = (String)membersView.getSelectionModel().getSelectedItem();
-//        @FXML
-//        public void onActionMembers(ActionEvent event){
-//            String selectedMem = (String)membersView.getSelectionModel().getSelectedItem();
-//            selectedMember.setText(selectedMem);
-//            selectedMember2.setText(selectedMem);
-
-//        }
+        @FXML
+        private ListView availableTeams;
+        @FXML
+        private ListView currentTeams;
+        
+        @FXML
+        public void onActionMember(){
+            System.out.println("venki");
+            String selectedMem = (String)membersView.getSelectionModel().getSelectedItem();
+            try {
+                Connector conn = new Connector();
+                teamsLeft = FXCollections.observableArrayList();
+                teamsRight = FXCollections.observableArrayList();
+                String sql = "Select team from teams  where not Member='"+selectedMem+"';";
+                String sql2 = "Select team from members where member='"+selectedMem+"';";
+                ResultSet myRes = conn.myStmt.executeQuery(sql);
+                while (myRes.next()){
+                    teamsLeft.add(myRes.getString("team"));
+                }
+                myRes.close();
+                ResultSet myRes2 = conn.myStmt.executeQuery(sql2);
+                while (myRes2.next()){
+                    teamsRight.add(myRes2.getString("team"));
+                }
+                myRes2.close();
+                availableTeams.setItems(teamsLeft);
+                currentTeams.setItems(teamsRight);
+                
+            } catch(Exception e){
+                System.out.println(e);
+            }
+        }
         public void getMembers(){
             try {
                  Connector conn = new Connector();
-                 String sql = "select membname from members; ";
+                 String sql = "select member from members; ";
                  ResultSet myRes = conn.myStmt.executeQuery(sql);
                  membersList = FXCollections.observableArrayList();
                  while(myRes.next()){
-                     membersList.add(myRes.getString("membname"));
+                     membersList.add(myRes.getString("member"));
                  }
                  membersView.setItems(membersList);
             }catch(Exception e){
