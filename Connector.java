@@ -5,50 +5,26 @@
  */
 package main_della;
 
-import java.net.Authenticator;
-import java.net.HttpURLConnection;
-import java.net.PasswordAuthentication;
-import java.net.URL;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.sql.Connection;
 
 /**
  *
- * @author Chotu
+ * @author Venkatesh Ejjagiri
  */
-public class OnlineStatus {
-     public static boolean checkStatus () 
-    {
+public class Connector {
+    public Connection myConn;
+    public Statement myStmt;
+    public Connector(){
         try {
-            
-        final String authUser = "201585025";
-	final String authPassword = "msit123";
-	Authenticator.setDefault(
-            new Authenticator() {
-            @Override
-            public PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(
-                    authUser, authPassword.toCharArray());
-            }
-            }
-	);
-	    System.setProperty("http.proxyUser", authUser);
-	    System.setProperty("http.proxyPassword", authPassword);
-	    System.setProperty("http.proxyHost", "10.10.10.3");
-            System.setProperty("http.proxyPort", "3128");
-            
-        URL url = new URL("http://google.com");
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.connect();
-        int code = connection.getResponseCode();
-        System.out.println("Response code of the object is "+code);
-        if (code==200) {
-            System.out.println("OK");
-            return true;
-        } else {
-            return false;
-        }
-        }catch(Exception e){
-            return false;
+            //1. Getting a connection to database
+            myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sample", "root", "venki_7474");
+            //2.creating the  statement
+            myStmt = myConn.createStatement();
+        } catch(Exception e){
+            System.err.println("");
         }
     }
 }
+
