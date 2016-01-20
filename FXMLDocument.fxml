@@ -55,23 +55,23 @@
       <Text layoutX="35.0" layoutY="234.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selected Action Item:" />
       <Text layoutX="37.0" layoutY="271.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name :" />
       <Text layoutX="35.0" layoutY="310.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description :" />
-      <TextField layoutX="106.0" layoutY="250.0" prefHeight="39.0" prefWidth="224.0" />
-      <TextArea layoutX="37.0" layoutY="319.0" prefHeight="104.0" prefWidth="552.0" />
+      <TextField fx:id="name_Console" editable="false" layoutX="106.0" layoutY="250.0" prefHeight="39.0" prefWidth="224.0" />
+      <TextArea fx:id="desc_Console" editable="false" layoutX="37.0" layoutY="319.0" prefHeight="104.0" prefWidth="552.0" />
       <Text layoutX="37.0" layoutY="455.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Resolution:" wrappingWidth="111.205078125" />
-      <TextArea layoutX="37.0" layoutY="465.0" prefHeight="116.0" prefWidth="552.0" />
+      <TextArea fx:id="res_Console" editable="false" layoutX="37.0" layoutY="465.0" prefHeight="116.0" prefWidth="552.0" />
       <Text layoutX="620.0" layoutY="405.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dates:" />
       <Text layoutX="620.0" layoutY="430.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Creation Date:" />
       <Text layoutX="624.0" layoutY="466.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Due:" />
-      <TextField layoutX="666.0" layoutY="440.0" prefHeight="39.0" prefWidth="170.0" />
-      <Label layoutX="739.0" layoutY="410.0" prefHeight="27.0" prefWidth="111.0" text="2015-12-08" />
+      <TextField fx:id="duedate_Console" editable="false" layoutX="666.0" layoutY="440.0" prefHeight="39.0" prefWidth="170.0" />
+      <Label fx:id="creationDate_Console" layoutX="739.0" layoutY="410.0" prefHeight="27.0" prefWidth="111.0" text="2015-12-08" />
       <Separator layoutX="-3.0" layoutY="40.0" prefHeight="3.0" prefWidth="859.0" />
       <Text layoutX="619.0" layoutY="499.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Action Item :" />
       <Text layoutX="618.0" layoutY="547.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Assigned to Member" />
       <Text layoutX="621.0" layoutY="603.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Assigned to Team :" />
       <Text layoutX="641.0" layoutY="520.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status :" />
-      <Label layoutX="710.0" layoutY="500.0" text="Open" />
-      <Label layoutX="643.0" layoutY="557.0" text="Label" />
-      <Label layoutX="645.0" layoutY="606.0" text="Label" />
+      <Label fx:id="status_Console" layoutX="710.0" layoutY="500.0" text="Open" />
+      <Label fx:id="assgnMem_Console" layoutX="643.0" layoutY="557.0" text="Label" />
+      <Label fx:id="assgnTeam_Console" layoutX="645.0" layoutY="606.0" text="Label" />
       <Label layoutX="23.0" layoutY="593.0" prefHeight="27.0" prefWidth="313.0" text="Copyright©2015 Venkatesh &amp; Azra" />
                         <Text layoutX="381.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Console">
                            <font>
@@ -79,7 +79,7 @@
                            </font>
                         </Text>
                         <Button layoutX="792.0" layoutY="2.0" mnemonicParsing="false" onAction="#quitAction" text="Quit" />
-                        <ListView fx:id="consoleItems" layoutX="40.0" layoutY="94.0" prefHeight="122.0" prefWidth="547.0" />
+                        <ListView fx:id="consoleItemsView" layoutX="40.0" layoutY="94.0" onMouseClicked="#onClickConsoleItems" prefHeight="122.0" prefWidth="547.0" />
                         <Label fx:id="onlineLabel1" layoutX="644.0" layoutY="8.0" prefHeight="27.0" prefWidth="65.0" text="Online" textFill="#33c905">
                            <font>
                               <Font name="System Bold" size="18.0" />
@@ -143,12 +143,9 @@
       <Label fx:id="currentDate" layoutX="742.0" layoutY="294.0" prefHeight="27.0" prefWidth="111.0" />
       <Separator layoutX="-2.0" layoutY="44.0" prefHeight="4.0" prefWidth="872.0" />
       <Text layoutX="626.0" layoutY="393.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Action Item :" />
-      <Text layoutX="622.0" layoutY="466.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Assigned to Member" />
-      <Text layoutX="619.0" layoutY="527.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Assigned to Team :" />
+      <Text layoutX="622.0" layoutY="459.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Assigned to Member" />
+      <Text layoutX="619.0" layoutY="524.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Assigned to Team :" />
       <Text layoutX="625.0" layoutY="428.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status :" />
-      <Label layoutX="705.0" layoutY="408.0" text="Open" />
-      <Label layoutX="633.0" layoutY="480.0" text="Label" />
-      <Label layoutX="633.0" layoutY="540.0" text="Label" />
       <ComboBox fx:id="actionItemCombo" layoutX="20.0" layoutY="79.0" onAction="#onActionCombo" prefHeight="39.0" prefWidth="788.0" />
       <Text layoutX="26.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select an action item from the pull down list above to examine and update it" wrappingWidth="628.39453125" />
       <ToolBar layoutX="14.0" layoutY="560.0" prefHeight="71.0" prefWidth="838.0">
@@ -175,6 +172,9 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
+                  <ComboBox fx:id="itemStatus" layoutX="695.0" layoutY="402.0" prefHeight="39.0" prefWidth="113.0" />
+                  <ComboBox fx:id="assgToMember" layoutX="679.0" layoutY="466.0" prefWidth="150.0" />
+                  <ComboBox fx:id="assgToTeam" layoutX="677.0" layoutY="524.0" prefWidth="150.0" />
    </children>
 </AnchorPane>
 
