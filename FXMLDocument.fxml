@@ -80,12 +80,14 @@
                         </Text>
                         <Button layoutX="792.0" layoutY="2.0" mnemonicParsing="false" onAction="#quitAction" text="Quit" />
                         <ListView fx:id="consoleItemsView" layoutX="40.0" layoutY="94.0" onMouseClicked="#onClickConsoleItems" prefHeight="122.0" prefWidth="547.0" />
-                        <Label fx:id="onlineLabel1" layoutX="644.0" layoutY="8.0" prefHeight="27.0" prefWidth="65.0" text="Online" textFill="#33c905">
+                        <Label layoutX="717.0" layoutY="7.0" prefHeight="28.0" prefWidth="68.0" text="Offline" textOverrun="CLIP">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
                         </Label>
-                        <Label fx:id="offlineLabel1" layoutX="717.0" layoutY="7.0" prefHeight="28.0" prefWidth="68.0" text="Offline" textFill="RED" textOverrun="CLIP">
+                        <Circle fx:id="offlineLabel1" fill="WHITE" layoutX="706.0" layoutY="21.0" radius="11.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Circle fx:id="onlineLabel1" fill="WHITE" layoutX="608.0" layoutY="22.0" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Label layoutX="623.0" layoutY="7.0" text="Online">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
@@ -148,7 +150,7 @@
       <Text layoutX="625.0" layoutY="428.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status :" />
       <ComboBox fx:id="actionItemCombo" layoutX="20.0" layoutY="79.0" onAction="#onActionCombo" prefHeight="39.0" prefWidth="788.0" />
       <Text layoutX="26.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select an action item from the pull down list above to examine and update it" wrappingWidth="628.39453125" />
-      <ToolBar layoutX="14.0" layoutY="560.0" prefHeight="71.0" prefWidth="838.0">
+      <ToolBar fx:id="actionButtons" layoutX="14.0" layoutY="560.0" prefHeight="71.0" prefWidth="838.0">
         <items>
           <Button mnemonicParsing="false" onAction="#updateAction" prefHeight="39.0" prefWidth="226.0" text="Update this action item" />
             <Button mnemonicParsing="false" onAction="#clearFormAction" prefHeight="39.0" prefWidth="171.0" text="Clear this form" />
@@ -162,12 +164,12 @@
                      </font>
                   </Text>
                   <Button layoutX="796.0" layoutY="2.0" mnemonicParsing="false" onAction="#quitAction" text="Quit" />
-                  <Label fx:id="onlineLabel2" layoutX="655.0" layoutY="8.0" text="Online" textFill="#33c905">
+                  <Label layoutX="632.0" layoutY="9.0" text="Online">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="offlineLabel2" layoutX="725.0" layoutY="8.0" text="Offline" textFill="#f50808">
+                  <Label layoutX="725.0" layoutY="9.0" text="Offline">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
@@ -175,6 +177,8 @@
                   <ComboBox fx:id="itemStatus" layoutX="695.0" layoutY="402.0" prefHeight="39.0" prefWidth="113.0" />
                   <ComboBox fx:id="assgToMember" layoutX="679.0" layoutY="466.0" prefWidth="150.0" />
                   <ComboBox fx:id="assgToTeam" layoutX="677.0" layoutY="524.0" prefWidth="150.0" />
+                  <Circle fx:id="onlineLabel2" fill="#33c905" layoutX="618.0" layoutY="23.0" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fx:id="offlineLabel2" fill="RED" layoutX="715.0" layoutY="21.0" radius="11.0" stroke="BLACK" strokeType="INSIDE" />
    </children>
 </AnchorPane>
 
@@ -189,13 +193,13 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Text>
-      <TextField fx:id="member" layoutX="12.0" layoutY="79.0" prefHeight="39.0" prefWidth="240.0" />
+      <TextField fx:id="member" layoutX="12.0" layoutY="79.0" onKeyTyped="#memAdd_enable" prefHeight="39.0" prefWidth="240.0" />
       <Label layoutX="11.0" layoutY="50.0" prefHeight="18.0" prefWidth="277.0" text="Name of someone new(Last,First,Middle)">
          <font>
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <Button layoutX="379.0" layoutY="84.0" mnemonicParsing="false" onAction="#addToList_mem" prefHeight="50.0" prefWidth="167.0" text="Add to List--&gt;">
+      <Button fx:id="addMemToListButton" layoutX="379.0" layoutY="84.0" mnemonicParsing="false" onAction="#addToList_mem" prefHeight="50.0" prefWidth="167.0" text="Add to List--&gt;">
          <textFill>
             <LinearGradient endX="1.0" endY="1.0" startX="0.719047619047619">
                <stops>
@@ -208,7 +212,7 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Button>
-      <Button layoutX="377.0" layoutY="140.0" mnemonicParsing="false" onAction="#removeMember" prefHeight="48.0" prefWidth="169.0" text="&lt;--Remove from List">
+      <Button fx:id="remvMemButton" layoutX="377.0" layoutY="140.0" mnemonicParsing="false" onAction="#removeMember" prefHeight="48.0" prefWidth="169.0" text="&lt;--Remove from List">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
@@ -233,12 +237,12 @@
             <Font name="System Bold" size="16.0" />
          </font>
       </Text>
-      <Button layoutX="389.0" layoutY="459.0" mnemonicParsing="false" onAction="#addAffiliation_mem" prefHeight="36.0" prefWidth="156.0" text="Add  Affiliation --&gt;">
+      <Button fx:id="addAffMem" layoutX="389.0" layoutY="459.0" mnemonicParsing="false" onAction="#addAffiliation_mem" prefHeight="36.0" prefWidth="156.0" text="Add  Affiliation --&gt;">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Button>
-      <Button layoutX="390.0" layoutY="536.0" mnemonicParsing="false" onAction="#removeAffiliation_mem" prefHeight="36.0" prefWidth="156.0" text="&lt;-- Remove affiliation">
+      <Button fx:id="remvAffMem" layoutX="390.0" layoutY="536.0" mnemonicParsing="false" onAction="#removeAffiliation_mem" prefHeight="36.0" prefWidth="156.0" text="&lt;-- Remove affiliation">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
@@ -284,19 +288,21 @@
                   <Button layoutX="798.0" layoutY="1.0" mnemonicParsing="false" onAction="#quitAction" text="Quit" />
                   <Label fx:id="selectedMember2" layoutX="700.0" layoutY="402.0" prefHeight="27.0" prefWidth="74.0" />
                   <Label fx:id="selectedMember" layoutX="175.0" layoutY="396.0" prefHeight="27.0" prefWidth="72.0" />
-                  <ListView fx:id="membersView" layoutX="585.0" layoutY="77.0" onMouseClicked="#onActionMember" prefHeight="186.0" prefWidth="245.0" />
-                  <ListView fx:id="availableTeams" layoutX="45.0" layoutY="433.0" prefHeight="155.0" prefWidth="296.0" />
-                  <ListView fx:id="currentTeams" layoutX="573.0" layoutY="443.0" prefHeight="154.0" prefWidth="250.0" />
-                  <Label fx:id="offlineLabel3" layoutX="729.0" layoutY="6.0" text="Offline" textFill="RED">
+                  <ListView fx:id="membersView" layoutX="585.0" layoutY="77.0" onMouseClicked="#onActionMember" onMousePressed="#memRemove_enable" prefHeight="186.0" prefWidth="245.0" />
+                  <ListView fx:id="availableTeams" layoutX="45.0" layoutY="433.0" onMouseClicked="#checkNull_avl_team" onMousePressed="#addAffil_enable" prefHeight="155.0" prefWidth="296.0" />
+                  <ListView fx:id="currentTeams" layoutX="573.0" layoutY="443.0" onMouseClicked="#checkNull_curr_team" onMousePressed="#removeAffil_enable" prefHeight="154.0" prefWidth="250.0" />
+                  <Label layoutX="729.0" layoutY="6.0" text="Offline">
                      <font>
                         <Font name="System Bold" size="19.0" />
                      </font>
                   </Label>
-                  <Label fx:id="onlineLabel3" layoutX="658.0" layoutY="7.0" text="Online" textFill="#33c905">
+                  <Label layoutX="650.0" layoutY="7.0" text="Online">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
+                  <Circle fx:id="onlineLabel3" fill="#33c905" layoutX="636.0" layoutY="21.0" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fx:id="offlineLabel3" fill="RED" layoutX="719.0" layoutY="20.0" radius="11.0" stroke="BLACK" strokeType="INSIDE" />
    </children>
 </AnchorPane>
 
@@ -311,12 +317,12 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Text>
-      <TextField fx:id="team" layoutX="14.0" layoutY="96.0" prefHeight="39.0" prefWidth="202.0" />
+      <TextField fx:id="team" layoutX="14.0" layoutY="96.0" onKeyTyped="#teamAdd_enable" prefHeight="39.0" prefWidth="202.0" />
       <Label layoutX="14.0" layoutY="60.0" text="Name of a new team">
          <font>
             <Font name="System Bold" size="16.0" />
          </font></Label>
-      <Button layoutX="363.0" layoutY="98.0" mnemonicParsing="false" onAction="#addToList_team" prefHeight="36.0" prefWidth="156.0" text="Add to List--&gt;">
+      <Button fx:id="addTeamToListButton" layoutX="363.0" layoutY="98.0" mnemonicParsing="false" onAction="#addToList_team" prefHeight="36.0" prefWidth="156.0" text="Add to List--&gt;">
          <textFill>
             <LinearGradient endX="1.0" endY="1.0" startX="0.719047619047619">
                <stops>
@@ -329,7 +335,7 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Button>
-      <Button layoutX="364.0" layoutY="150.0" mnemonicParsing="false" onAction="#removeFromList_team" prefHeight="36.0" prefWidth="156.0" text="&lt;--Remove from List">
+      <Button fx:id="remvTeamButton" layoutX="364.0" layoutY="150.0" mnemonicParsing="false" onAction="#removeFromList_team" prefHeight="36.0" prefWidth="156.0" text="&lt;--Remove from List">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
@@ -352,12 +358,12 @@
          <font>
             <Font name="System Bold" size="16.0" />
          </font></Text>
-      <Button layoutX="335.0" layoutY="453.0" mnemonicParsing="false" onAction="#addAssociation_team" prefHeight="40.0" prefWidth="181.0" text="Add association --&gt;">
+      <Button fx:id="addAsstnTeam" layoutX="335.0" layoutY="453.0" mnemonicParsing="false" onAction="#addAssociation_team" prefHeight="40.0" prefWidth="181.0" text="Add association --&gt;">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
-      <Button layoutX="335.0" layoutY="526.0" mnemonicParsing="false" onAction="#removeAssociation_team" prefHeight="46.0" prefWidth="181.0" text="&lt;-- Remove association">
+      <Button fx:id="remvAsstnTeam" layoutX="335.0" layoutY="526.0" mnemonicParsing="false" onAction="#removeAssociation_team" prefHeight="46.0" prefWidth="181.0" text="&lt;-- Remove association">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
@@ -401,19 +407,21 @@
                   <Button layoutX="792.0" layoutY="1.0" mnemonicParsing="false" onAction="#quitAction" text="Quit" />
                   <Label layoutX="17.0" layoutY="417.0" text="Team" />
                   <Label layoutX="533.0" layoutY="428.0" text="Team" />
-                  <ListView fx:id="teamsView" layoutX="579.0" layoutY="86.0" onMouseClicked="#onClickActionTeam" prefHeight="200.0" prefWidth="246.0" />
-                  <Label fx:id="offlineLabel4" layoutX="721.0" layoutY="7.0" text="Offline" textFill="RED">
+                  <ListView fx:id="teamsView" layoutX="579.0" layoutY="86.0" onMouseClicked="#onClickActionTeam" onMousePressed="#teamRemove_enable" prefHeight="200.0" prefWidth="246.0" />
+                  <Label layoutX="721.0" layoutY="7.0" text="Offline">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="onlineLabel4" layoutX="649.0" layoutY="6.0" text="Online" textFill="#33c905">
+                  <Label layoutX="635.0" layoutY="6.0" text="Online">
                      <font>
                         <Font name="System Bold" size="19.0" />
                      </font>
                   </Label>
-                  <ListView fx:id="availableMembers" layoutX="34.0" layoutY="453.0" prefHeight="161.0" prefWidth="258.0" />
-                  <ListView fx:id="currentMembers" layoutX="549.0" layoutY="455.0" prefHeight="160.0" prefWidth="275.0" />
+                  <ListView fx:id="availableMembers" layoutX="34.0" layoutY="453.0" onMouseClicked="#checkNull_avl_mem" onMousePressed="#addAss_enable" prefHeight="161.0" prefWidth="258.0" />
+                  <ListView fx:id="currentMembers" layoutX="549.0" layoutY="455.0" onMouseClicked="#checkNull_curr_mem" onMousePressed="#remvAss_enable" prefHeight="160.0" prefWidth="275.0" />
+                  <Circle fx:id="onlineLabel4" fill="#33c905" layoutX="622.0" layoutY="21.0" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fx:id="offlineLabel4" fill="RED" layoutX="711.0" layoutY="21.0" radius="11.0" stroke="BLACK" strokeType="INSIDE" />
    </children>
 </AnchorPane>
 
