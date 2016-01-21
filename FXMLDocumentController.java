@@ -24,6 +24,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -32,6 +33,9 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToolBar;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 /**
  *
@@ -210,8 +214,8 @@ public class FXMLDocumentController implements Initializable {
             Connector connection = new Connector();
             connection.myStmt = connection.myConn.createStatement();
             if (result.get() == ButtonType.OK) {
-//                connection.myStmt.executeUpdate("truncate items");
-//                connection.myStmt.executeUpdate("insert into items select * from item_sample;");
+                connection.myStmt.executeUpdate("truncate flag");
+                connection.myStmt.executeUpdate("insert into flag values('0')");
 //                connection.myStmt.executeUpdate("truncate item_sample");
                 exit(0);
             } else {
@@ -223,8 +227,9 @@ public class FXMLDocumentController implements Initializable {
         }
     }
     @FXML
-    public Label onlineLabel1, onlineLabel2, onlineLabel3, onlineLabel4;
-    public Label offlineLabel1, offlineLabel2, offlineLabel3, offlineLabel4;
+    public Circle onlineLabel1, onlineLabel2, onlineLabel3, onlineLabel4;
+    @FXML
+    public Circle offlineLabel1, offlineLabel2, offlineLabel3, offlineLabel4;
 //    offlineLabel;
     
     ObservableList<String> statusList = FXCollections.observableArrayList("open","closed");
@@ -235,12 +240,51 @@ public class FXMLDocumentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        check_online_offline();
+//        check_online_offline();
+        new Timer().schedule(
+            new TimerTask() {
+            @Override
+            public void run() {
+                ConnectionStatus = OnlineStatus.checkStatus();
+                System.out.println("Status:" + ConnectionStatus );
+                if(ConnectionStatus) {
+                   onlineLabel1.setFill(Color.GREEN);
+                   onlineLabel2.setFill(Color.GREEN);
+                   onlineLabel3.setFill(Color.GREEN);
+                   onlineLabel4.setFill(Color.GREEN);
+                   offlineLabel1.setFill(Color.WHITE);
+                   offlineLabel2.setFill(Color.WHITE);
+                   offlineLabel3.setFill(Color.WHITE);
+                   offlineLabel4.setFill(Color.WHITE);
+                   try{
+                        checkOnlineUser();
+                   }catch(Exception e){
+                       
+                   }
+                } else {
+                   onlineLabel1.setFill(Color.WHITE);
+                   onlineLabel2.setFill(Color.WHITE);
+                   onlineLabel3.setFill(Color.WHITE);
+                   onlineLabel4.setFill(Color.WHITE);
+                   offlineLabel1.setFill(Color.RED);
+                   offlineLabel2.setFill(Color.RED);
+                   offlineLabel3.setFill(Color.RED);
+                   offlineLabel4.setFill(Color.RED);
+                   disableButtons();
+                } 
+            }
+            }, 0, 10000);
+        addMemToListButton.setDisable(true);
+        remvMemButton.setDisable(true);
+        addTeamToListButton.setDisable(true);
+        remvTeamButton.setDisable(true);
+        addAffMem.setDisable(true);
+        remvAffMem.setDisable(true);
+        addAsstnTeam.setDisable(true);
+        remvAsstnTeam.setDisable(true);
+        
         try {
             Connector conn = new Connector();
-//            conn.myStmt = conn.myConn.createStatement();
-//            conn.myStmt.executeUpdate("insert into item_sample select * from items;");
-            
             ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample");
             
             itemsList = FXCollections.observableArrayList();
@@ -257,71 +301,110 @@ public class FXMLDocumentController implements Initializable {
             assigned_mem_team();
             itemStatus.setItems(statusList);
             itemStatus.setValue("open");
-//            TimerTask  t;
-//                t = new TimerTask() {
-//                    @Override
-//                    public void run() {
-////                        OnlineStatus cic = new OnlineStatus();
-//                        ConnectionStatus = OnlineStatus.checkStatus();
-//                        System.out.println("Check:"+ConnectionStatus);
-//                        if (ConnectionStatus == true) {
-//                            offlineLabel1.setText("");
-//                            offlineLabel2.setText("");
-//                            offlineLabel3.setText("");
-//                            offlineLabel4.setText("");
-//                        } else if (ConnectionStatus == false) {
-//                            
-//                            onlineLabel1.setText("");
-//                            onlineLabel2.setText("");
-//                            onlineLabel3.setText("");
-//                            onlineLabel4.setText("");
-//                        }
-////                        online_offline();
-//                    }//End of run Method
-//                };
-////                Timer tt = new Timer();
-////                long delay = 0;
-////                long intevalPeriod = 20 * 1000;
-//                System.out.println("its error");
-////                tt.scheduleAtFixedRate(t, delay,intevalPeriod); 
+            
+        
         } catch (Exception e) {
             System.out.println(e);
         }
     }
-    private void check_online_offline() {
-       final long timeInterval = 500;
-       Runnable runnable;
-       Thread thread1 = new Thread(
-       runnable = new Runnable() {
-           
-           @Override
-           public void run() {
-               while (true) {
-                   ConnectionStatus = OnlineStatus.checkStatus();
-                    if (ConnectionStatus == true) {
-                       System.out.println("its online");
-                            offlineLabel1.setText("");
-                            offlineLabel2.setText("");
-                            offlineLabel3.setText("");
-                            offlineLabel4.setText("");
-                    } else if (ConnectionStatus == false){
-                        System.out.println("its offline");
-                            onlineLabel1.setText("");
-                            onlineLabel2.setText("");
-                            onlineLabel3.setText("");
-                            onlineLabel4.setText("");
-                        } try {
-//                        System.out.println("tryy");
-                       Thread.sleep(timeInterval);
-                   } catch (InterruptedException e) {
-                       System.out.println("Exception in checking online/offline");
-                   }
-               }
-           }
-       }
-       );
-       thread1.start();
+    
+    public void checkOnlineUser() throws Exception{
+        Connector conn = new Connector();
+            String statusFlag ="";
+//            conn.myStmt = conn.myConn.createStatement();
+//            conn.myStmt.executeUpdate("insert into item_sample select * from items;");
+            ResultSet myRs1 = conn.myStmt.executeQuery("Select flag_id from flag");
+            while(myRs1.next()){
+                statusFlag = myRs1.getString("flag_id");
+            }
+            if (statusFlag.equals("1")){
+                disableButtons();
+            } else {
+                conn.myStmt.executeUpdate("truncate flag");
+                conn.myStmt.executeUpdate("insert into flag values('1')");
+            }
     }
+    
+    @FXML
+    ToolBar actionButtons;
+    @FXML
+    Button addMemToListButton, remvMemButton, addTeamToListButton, remvTeamButton,addAffMem, remvAffMem, addAsstnTeam, remvAsstnTeam;
+    public void disableButtons(){
+        actionButtons.setDisable(true);
+        addMemToListButton.setDisable(true);
+        remvMemButton.setDisable(true);
+        addTeamToListButton.setDisable(true);
+        remvTeamButton.setDisable(true);
+        addAffMem.setDisable(true);
+        remvAffMem.setDisable(true);
+        addAsstnTeam.setDisable(true);
+        remvAsstnTeam.setDisable(true);
+    }
+    
+    public void memAdd_enable() {
+       if(member.getText().equals("")) {
+           addMemToListButton.setDisable(true);
+       }
+       else {
+           addMemToListButton.setDisable(false);
+       }   
+    }
+   /*To enable remove from list button in members screen*/
+    public void memRemove_enable() {
+       remvMemButton.setDisable(false);
+    }
+   /*To enable Add_Affiliation button in members screen */
+    public void addAffil_enable() {
+       addAffMem.setDisable(false);
+    }
+    /*To enable remove_affiliation button in members screen */
+    public void removeAffil_enable() {
+       remvAffMem.setDisable(false);
+    }
+   
+    public void teamAdd_enable() {
+       if(team.getText().equals("")) {
+           addTeamToListButton.setDisable(true);
+       }
+       else {
+           addTeamToListButton.setDisable(false);
+       }   
+   }
+   /*To enable remove from list button in teams screen*/
+   public void teamRemove_enable() {
+       remvTeamButton.setDisable(false);
+   }
+   /*To enable Add_Association button in teams screen */
+   public void addAss_enable() {
+       addAsstnTeam.setDisable(false);
+   }
+   public void remvAss_enable() {
+       remvAsstnTeam.setDisable(false);
+   }
+   public void checkNull_curr_mem(){
+       String str = (String) currentMembers.getSelectionModel().getSelectedItem();
+       if ( str == null){
+           remvAsstnTeam.setDisable(true);
+       }
+   }
+   public void checkNull_avl_mem(){
+       String str = (String) availableMembers.getSelectionModel().getSelectedItem();
+       if ( str == null){
+           addAsstnTeam.setDisable(true);
+       }
+   }
+   public void checkNull_curr_team(){
+       String str = (String) currentTeams.getSelectionModel().getSelectedItem();
+       if ( str == null){
+           remvAffMem.setDisable(true);
+       }
+   }
+   public void checkNull_avl_team(){
+       String str = (String) availableTeams.getSelectionModel().getSelectedItem();
+       if ( str == null){
+           addAffMem.setDisable(true);
+       }
+   }
     public void assigned_mem_team() throws Exception{
         Connector conn = new Connector();
         
