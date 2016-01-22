@@ -23,7 +23,7 @@ public class ConsoleScreen {
     
     public static void getDetails(String selectedItem) throws Exception{
         Connector conn = new Connector();
-        String sql = "select * from item_sample where name='"+selectedItem+"';";
+        String sql = "select * from action_item where name='"+selectedItem+"';";
         ResultSet myRes = conn.myStmt.executeQuery(sql);
         while (myRes.next()){
             name = myRes.getString("name");
