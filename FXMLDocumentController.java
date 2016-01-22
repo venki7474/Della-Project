@@ -5,14 +5,23 @@
  */
 package main_della;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import static java.lang.System.exit;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Clock;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Timer;
@@ -42,7 +51,9 @@ import javafx.scene.shape.Circle;
  * @author Chotu
  */
 public class FXMLDocumentController implements Initializable {
-
+    
+    ////////// actionItems ////////////////
+    
     ObservableList<String> itemsList = FXCollections.observableArrayList();
     DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     Calendar cal = Calendar.getInstance();
@@ -59,12 +70,35 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private ComboBox<String> actionItemCombo = new ComboBox<String>(itemsList);
-
     @FXML
-    private void updateAction(ActionEvent event) {
-        try {
-            Connector conn = new Connector();
-            conn.myStmt = conn.myConn.createStatement();
+    private ComboBox itemStatus, assgToMember, assgToTeam;
+    
+    ObservableList<String> statusList = FXCollections.observableArrayList("open","closed");
+                  /////////////// available members and teams ///////////////////
+    ObservableList<String> avMembsList_combo = FXCollections.observableArrayList();
+    ObservableList<String> avTeamsList_combo = FXCollections.observableArrayList();
+    
+    ///////////// online offline indicators //////////
+    @FXML
+    public Circle onlineLabel1, onlineLabel2, onlineLabel3, onlineLabel4;
+    @FXML
+    public Circle offlineLabel1, offlineLabel2, offlineLabel3, offlineLabel4;
+    public boolean ConnectionStatus;
+    
+    
+    
+    ///////// all buttons ////////////
+    @FXML
+    ToolBar actionButtons;
+    @FXML
+    Button addMemToListButton, remvMemButton, addTeamToListButton, remvTeamButton,addAffMem, remvAffMem, addAsstnTeam, remvAsstnTeam,
+            updateButton,deleteButton;
+    
+    Hashtable<String, ArrayList<String>> disp_hash = new Hashtable<String, ArrayList<String>>();
+    boolean flag_f;
+    @FXML
+    private void updateAction(ActionEvent event) throws Exception {
+            
             String name = itemName.getText();
             String desc = itemDesc.getText();
             String resolution = itemResolution.getText();
@@ -74,23 +108,13 @@ public class FXMLDocumentController implements Initializable {
             String memAssigned = (String) assgToMember.getSelectionModel().getSelectedItem();
             String teamAssigned = (String) assgToTeam.getSelectionModel().getSelectedItem();
             String selectedItem = (String) actionItemCombo.getSelectionModel().getSelectedItem();
-            conn.myStmt.executeUpdate("delete from item_sample where name = '" + selectedItem + "';");
-            String sql = "insert into item_sample"
-                    + "(name, description, resolution, creationdate, duedate, status, assignedMember, assignedTeam)"
-                    + "values('" + name + "','" + desc + "','" + resolution + "','" + creationDate + "','"+duedate+"', '"
-                    + actionStatus+"', '"+memAssigned+ "', '"+teamAssigned+"')";
-            conn.myStmt.executeUpdate(sql);
-            System.out.println("venki's test");
+            ActionItems.updateActionItem(selectedItem, name, desc, resolution, duedate, creationDate, actionStatus, memAssigned, teamAssigned);
             refresh();
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+            if (flag_f){
+                Connector conn = new Connector();
+                conn.myStmt.executeUpdate("Truncate flag;");
+            }
     }
-    @FXML
-    private ComboBox itemStatus, assgToMember, assgToTeam;
-
-
     @FXML
     private void clearFormAction(ActionEvent event) {
         itemName.setText("");
@@ -103,8 +127,7 @@ public class FXMLDocumentController implements Initializable {
     }
 
     @FXML
-    private void createActionItem(ActionEvent event) {
-        try {
+    private void createActionItem(ActionEvent event) throws Exception {
             String name = itemName.getText();
             String desc = itemDesc.getText();
             String resolution = itemResolution.getText();
@@ -114,30 +137,15 @@ public class FXMLDocumentController implements Initializable {
             String memAssigned = (String) assgToMember.getSelectionModel().getSelectedItem();
             String teamAssigned = (String) assgToTeam.getSelectionModel().getSelectedItem();
             String selectedItem = (String) actionItemCombo.getSelectionModel().getSelectedItem();
-            Connector conn = new Connector();
-            conn.myStmt = conn.myConn.createStatement();
-            String sql = "insert into item_sample"
-                    + "(name, description, resolution, creationdate, duedate, status, assignedMember, assignedTeam)"
-                    + "values('" + name + "','" + desc + "','" + resolution + "','" + creationDate + "','"+duedate+"', '"
-                    + actionStatus+"', '"+memAssigned+ "', '"+teamAssigned+"')";
-            conn.myStmt.executeUpdate(sql);
+            ActionItems.createItem(name, desc, resolution, duedate, creationDate, actionStatus, memAssigned, teamAssigned);
             System.out.println("Item created");
-
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-//        actionItemCombo.setItems(itemsList);
-        refresh();
+            refresh();
     }
 
     @FXML
-    private void deleteActionItem(ActionEvent event) {
-        try {
-            Connector conn = new Connector();
-            conn.myStmt = conn.myConn.createStatement();
+    private void deleteActionItem(ActionEvent event) throws Exception{
             String selectedItem = (String) actionItemCombo.getSelectionModel().getSelectedItem();
-            conn.myStmt.executeUpdate("delete from item_sample where name = '" + selectedItem + "';");
+            ActionItems.deleteActionItem(selectedItem);
             refresh();
             itemName.setText("");
             itemDesc.setText("");
@@ -146,62 +154,140 @@ public class FXMLDocumentController implements Initializable {
             assgToMember.setValue("");
             assgToTeam.setValue("");
             itemStatus.setValue("open");
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
-    @FXML
-    private void onActionCombo(ActionEvent event) {
-        try {
-            Connector conn = new Connector();
-            conn.myStmt = conn.myConn.createStatement();
-            ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample");
-            String selectedItem = (String) actionItemCombo.getSelectionModel().getSelectedItem();
-            if (selectedItem.equals("")) {
-                itemName.setText("");
-                itemDesc.setText("");
-                itemResolution.setText("");
-                dueDate.setText("");
-            } else {
-                while (myRs.next()) {
-//                itemsList.add(myRs.getString("name"));
-                    if (selectedItem.equals(myRs.getString("name"))) {
-                        itemName.setText(myRs.getString("name"));
-                        itemDesc.setText(myRs.getString("description"));
-                        itemResolution.setText(myRs.getString("resolution"));
-                        dueDate.setText(myRs.getString("duedate"));
-                        currentDate.setText(myRs.getString("creationdate"));
-                        assgToMember.setValue(myRs.getString("assignedMember"));
-                        assgToTeam.setValue(myRs.getString("assignedTeam"));
-                        itemStatus.setValue(myRs.getString("status"));
-                    }
-                }
+            if (flag_f){
+                Connector conn = new Connector();
+                conn.myStmt.executeUpdate("Truncate flag;");
             }
-//            actionItemCombo.setItems(itemsList);
-//            System.out.println("inserted");
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-    public void refresh() {
-        try {
             
-            Connector conn = new Connector();
-            conn.myStmt = conn.myConn.createStatement();
-            ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample");
-            itemsList = FXCollections.observableArrayList();
-//            itemsList.add("");
-            while (myRs.next()) {
-                itemsList.add(myRs.getString("name"));
+    }
+    
+    @FXML
+    private void onActionCombo(ActionEvent event) throws Exception{
+        String selectedItem = (String) actionItemCombo.getSelectionModel().getSelectedItem();
+        if (ConnectionStatus){
+            ActionItems.OnActionCombo(selectedItem);
+            itemName.setText(ActionItems.name1);
+            itemDesc.setText(ActionItems.desc1);
+            itemResolution.setText(ActionItems.resolution1);
+            dueDate.setText(ActionItems.duedate1);
+            currentDate.setText(ActionItems.creationDate1);
+            assgToMember.setValue(ActionItems.memAssigned1);
+            assgToTeam.setValue(ActionItems.teamAssigned1);
+            itemStatus.setValue(ActionItems.actionStatus1);
+            flag_f = checkFlag(selectedItem);
+            if ( flag_f ) {
+                updateButton.setDisable(flag_f);
+                deleteButton.setDisable(flag_f);
             }
-            consoleItemsView.setItems(itemsList);
-            actionItemCombo.setItems(itemsList);
-        } catch (Exception e) {
-            System.out.println(e);
+        } else{
+            disp_hash = readFromFile();
+            ArrayList<String> sfl = disp_hash.get(selectedItem);
+            itemName.setText(selectedItem);
+            itemDesc.setText(sfl.get(0));
+            itemResolution.setText(sfl.get(1));
+            dueDate.setText(sfl.get(3));
+            currentDate.setText(sfl.get(2));
+            assgToMember.setValue(sfl.get(4));
+            assgToTeam.setValue(sfl.get(5));
+            itemStatus.setValue(sfl.get(6));
         }
     }
-
+    public boolean checkFlag(String str) throws Exception {
+        String sql = "select * from itemflag where itemflag='"+str+"';";
+        Connector conn = new Connector();
+        ResultSet myRes = conn.myStmt.executeQuery(sql);
+        while(myRes.next()){
+            return true;
+        }
+        return false;
+    }
+    public void displayingMemToTeam() throws Exception {
+        String selected_mem = (String) assgToMember.getSelectionModel().getSelectedItem();
+        String selected_team = (String) assgToTeam.getSelectionModel().getSelectedItem();
+        ArrayList<String> teamListTemp = new ArrayList<>();
+        Connector conn = new Connector();
+        //System.out.println("In 1) " + selected_mem);
+        if (selected_mem == null || selected_mem.equals("")) {
+            // error code
+            //System.out.println("1) U are not allowed! Sorry");
+        } else if(selected_mem.equals("None")){
+            showTeamsList();
+        } else {
+            if (selected_team == null || selected_team.equals("") || selected_team.equals("None")) {
+                assgToTeam.setValue("");
+            }
+            String query1 = "select * from teams_members where members = '" + selected_mem +"'";
+            ResultSet myRs = conn.myStmt.executeQuery(query1);
+            while(myRs.next()){
+                teamListTemp.add(myRs.getString("teams"));
+            }
+            teamListTemp.add("None");
+            ObservableList<String> teamListFinal = FXCollections.observableArrayList(teamListTemp);
+            assgToTeam.setItems(teamListFinal);
+        }
+    }
+    public void displayingTeamToMem() throws Exception {
+        String selected_team = (String) assgToTeam.getSelectionModel().getSelectedItem();
+        String selected_mem = (String) assgToMember.getSelectionModel().getSelectedItem();
+        Connector conn = new Connector();
+        ArrayList<String> memberListTemp = new ArrayList<>();
+        if (selected_team == null || selected_team.equals("")) {
+ 
+        } else if(selected_team.equals("None")){
+            showMembersList();
+        } else {
+            if (selected_mem == null || selected_mem.equals("") || selected_mem.equals("None")) {
+                assgToMember.setValue("");
+            }
+            String query1 = "select * from teams_members where teams = '" + selected_team +"'"; 
+            ResultSet rs = conn.myStmt.executeQuery(query1);
+            while(rs.next()){
+                memberListTemp.add(rs.getString("members"));
+            }
+            memberListTemp.add("None");
+            ObservableList<String> memberListFinal = FXCollections.observableArrayList(memberListTemp);
+            assgToMember.setItems(memberListFinal);
+        }
+    }
+    public void showTeamsList() throws Exception{
+        Connector conn = new Connector();
+        ResultSet myRs2 = conn.myStmt.executeQuery("Select * from teams");
+        avTeamsList_combo = FXCollections.observableArrayList();
+        while(myRs2.next()){
+            avTeamsList_combo.add(myRs2.getString("team"));
+        }
+        assgToTeam.setItems(avTeamsList_combo);
+    }
+    public void showMembersList() throws Exception{
+        Connector conn = new Connector();
+        ResultSet myRs1 = conn.myStmt.executeQuery("Select * from members");
+        avMembsList_combo = FXCollections.observableArrayList();
+        while(myRs1.next()){
+            avMembsList_combo.add(myRs1.getString("member"));
+        }
+        assgToMember.setItems(avMembsList_combo);
+    }
+    public void assigned_mem_team() throws Exception{
+        Connector conn = new Connector();
+        ResultSet myRs1 = conn.myStmt.executeQuery("Select * from members");
+        while(myRs1.next()){
+            avMembsList_combo.add(myRs1.getString("member"));
+        }
+        assgToMember.setItems(avMembsList_combo);
+        ResultSet myRs2 = conn.myStmt.executeQuery("Select * from teams");
+        while(myRs2.next()){
+            avTeamsList_combo.add(myRs2.getString("team"));
+        }
+        assgToTeam.setItems(avTeamsList_combo);
+    }
+    public void refresh() throws Exception{
+            consoleItemsView.setItems(ActionItems.getItemlist());
+            actionItemCombo.setItems(ActionItems.getItemlist());
+    }
+    /**
+     *  this is quit action button
+     * @param event 
+     */
     @FXML
     private void quitAction(ActionEvent event) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -214,8 +300,8 @@ public class FXMLDocumentController implements Initializable {
             Connector connection = new Connector();
             connection.myStmt = connection.myConn.createStatement();
             if (result.get() == ButtonType.OK) {
-                connection.myStmt.executeUpdate("truncate flag");
-                connection.myStmt.executeUpdate("insert into flag values('0')");
+                //connection.myStmt.executeUpdate("truncate flag");
+                //connection.myStmt.executeUpdate("insert into flag values('1')");
 //                connection.myStmt.executeUpdate("truncate item_sample");
                 exit(0);
             } else {
@@ -226,21 +312,35 @@ public class FXMLDocumentController implements Initializable {
             System.out.println(e);
         }
     }
-    @FXML
-    public Circle onlineLabel1, onlineLabel2, onlineLabel3, onlineLabel4;
-    @FXML
-    public Circle offlineLabel1, offlineLabel2, offlineLabel3, offlineLabel4;
-//    offlineLabel;
-    
-    ObservableList<String> statusList = FXCollections.observableArrayList("open","closed");
-    ObservableList<String> avMembsList_combo = FXCollections.observableArrayList();
-    ObservableList<String> avTeamsList_combo = FXCollections.observableArrayList();
-    boolean ConnectionStatus;
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-//        check_online_offline();
+        try {
+            Check_Connection();
+            addMemToListButton.setDisable(true);
+            remvMemButton.setDisable(true);
+            addTeamToListButton.setDisable(true);
+            remvTeamButton.setDisable(true);
+            addAffMem.setDisable(true);
+            remvAffMem.setDisable(true);
+            addAsstnTeam.setDisable(true);
+            remvAsstnTeam.setDisable(true);
+            
+            
+            
+            currentDate.setText(format.format(dateobj));
+            getMembers();
+            getTeams();
+            assigned_mem_team();
+            itemStatus.setItems(statusList);
+            itemStatus.setValue("open");
+        } catch (Exception e){
+            System.out.println(e);
+        }
+    }
+    Hashtable<String, ArrayList<String>> myHash = new Hashtable<String, ArrayList<String>>();
+    public void Check_Connection(){
         new Timer().schedule(
             new TimerTask() {
             @Override
@@ -248,18 +348,38 @@ public class FXMLDocumentController implements Initializable {
                 ConnectionStatus = OnlineStatus.checkStatus();
                 System.out.println("Status:" + ConnectionStatus );
                 if(ConnectionStatus) {
-                   onlineLabel1.setFill(Color.GREEN);
-                   onlineLabel2.setFill(Color.GREEN);
-                   onlineLabel3.setFill(Color.GREEN);
-                   onlineLabel4.setFill(Color.GREEN);
-                   offlineLabel1.setFill(Color.WHITE);
-                   offlineLabel2.setFill(Color.WHITE);
-                   offlineLabel3.setFill(Color.WHITE);
-                   offlineLabel4.setFill(Color.WHITE);
-                   try{
-                        checkOnlineUser();
+                    onlineLabel1.setFill(Color.GREEN);
+                    onlineLabel2.setFill(Color.GREEN);
+                    onlineLabel3.setFill(Color.GREEN);
+                    onlineLabel4.setFill(Color.GREEN);
+                    offlineLabel1.setFill(Color.WHITE);
+                    offlineLabel2.setFill(Color.WHITE);
+                    offlineLabel3.setFill(Color.WHITE);
+                    offlineLabel4.setFill(Color.WHITE);
+//                    actionButtons.setDisable(false);
+                    try{
+                        Connector conn = new Connector();
+
+                        
+                        ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample ;");
+                        while (myRs.next()) {
+                            ArrayList<String> arrList = new ArrayList<String>();
+                            arrList.add(myRs.getString("description"));
+                            arrList.add(myRs.getString("resolution"));
+                            arrList.add(myRs.getString("creationdate"));
+                            arrList.add(myRs.getString("duedate"));
+                            arrList.add(myRs.getString("assignedMember"));
+                            arrList.add(myRs.getString("assignedteam"));
+                            arrList.add(myRs.getString("status"));
+                            myHash.put(myRs.getString("name"),arrList);
+                        }
+                        writeIntoFile(myHash);
+                        
+                        disp_hash = new Hashtable<String, ArrayList<String>>();
+                        actionItemCombo.setItems(ActionItems.getItemlist());
+                        consoleItemsView.setItems(ActionItems.getItemlist());
+                        //checkOnlineUser();
                    }catch(Exception e){
-                       
                    }
                 } else {
                    onlineLabel1.setFill(Color.WHITE);
@@ -271,43 +391,18 @@ public class FXMLDocumentController implements Initializable {
                    offlineLabel3.setFill(Color.RED);
                    offlineLabel4.setFill(Color.RED);
                    disableButtons();
-                } 
+                   
+//                    myHash = readFromFile();
+//                    ObservableList<String> hash_itemsList = FXCollections.observableArrayList();
+//                      for (String key : myHash.keySet()){
+//                          hash_itemsList.add(key);
+//                      }
+//                      consoleItemsView.setItems(hash_itemsList);
+                   }
+
             }
-            }, 0, 10000);
-        addMemToListButton.setDisable(true);
-        remvMemButton.setDisable(true);
-        addTeamToListButton.setDisable(true);
-        remvTeamButton.setDisable(true);
-        addAffMem.setDisable(true);
-        remvAffMem.setDisable(true);
-        addAsstnTeam.setDisable(true);
-        remvAsstnTeam.setDisable(true);
-        
-        try {
-            Connector conn = new Connector();
-            ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample");
-            
-            itemsList = FXCollections.observableArrayList();
-            while (myRs.next()) {
-                itemsList.add(myRs.getString("name"));
-//                consoleList.add(myRs.getString("name"));
-            }
-             
-            actionItemCombo.setItems(itemsList);
-            consoleItemsView.setItems(itemsList);
-            currentDate.setText(format.format(dateobj));
-            getMembers();
-            getTeams();
-            assigned_mem_team();
-            itemStatus.setItems(statusList);
-            itemStatus.setValue("open");
-            
-        
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+            }, 0, 1000);
     }
-    
     public void checkOnlineUser() throws Exception{
         Connector conn = new Connector();
             String statusFlag ="";
@@ -317,7 +412,7 @@ public class FXMLDocumentController implements Initializable {
             while(myRs1.next()){
                 statusFlag = myRs1.getString("flag_id");
             }
-            if (statusFlag.equals("1")){
+            if (statusFlag.equals("2")){
                 disableButtons();
             } else {
                 conn.myStmt.executeUpdate("truncate flag");
@@ -325,10 +420,6 @@ public class FXMLDocumentController implements Initializable {
             }
     }
     
-    @FXML
-    ToolBar actionButtons;
-    @FXML
-    Button addMemToListButton, remvMemButton, addTeamToListButton, remvTeamButton,addAffMem, remvAffMem, addAsstnTeam, remvAsstnTeam;
     public void disableButtons(){
         actionButtons.setDisable(true);
         addMemToListButton.setDisable(true);
@@ -342,44 +433,52 @@ public class FXMLDocumentController implements Initializable {
     }
     
     public void memAdd_enable() {
-       if(member.getText().equals("")) {
-           addMemToListButton.setDisable(true);
-       }
-       else {
-           addMemToListButton.setDisable(false);
-       }   
+        if (ConnectionStatus){
+            if( member.getText().equals("")) {
+                addMemToListButton.setDisable(true);
+            } else {
+                addMemToListButton.setDisable(false);
+            }
+        }
     }
    /*To enable remove from list button in members screen*/
     public void memRemove_enable() {
-       remvMemButton.setDisable(false);
+        if (ConnectionStatus)
+            remvMemButton.setDisable(false);
     }
    /*To enable Add_Affiliation button in members screen */
     public void addAffil_enable() {
-       addAffMem.setDisable(false);
+        if (ConnectionStatus)
+           addAffMem.setDisable(false);
     }
     /*To enable remove_affiliation button in members screen */
     public void removeAffil_enable() {
-       remvAffMem.setDisable(false);
+        if (ConnectionStatus)
+            remvAffMem.setDisable(false);
     }
    
     public void teamAdd_enable() {
-       if(team.getText().equals("")) {
-           addTeamToListButton.setDisable(true);
-       }
-       else {
-           addTeamToListButton.setDisable(false);
-       }   
+        if (ConnectionStatus){
+            if(team.getText().equals("")) {
+                addTeamToListButton.setDisable(true);
+            } else {
+                addTeamToListButton.setDisable(false);
+            }
+        }
    }
    /*To enable remove from list button in teams screen*/
    public void teamRemove_enable() {
-       remvTeamButton.setDisable(false);
+        if (ConnectionStatus)
+            remvTeamButton.setDisable(false);
    }
    /*To enable Add_Association button in teams screen */
    public void addAss_enable() {
-       addAsstnTeam.setDisable(false);
+        if(ConnectionStatus)
+            addAsstnTeam.setDisable(false);
    }
    public void remvAss_enable() {
-       remvAsstnTeam.setDisable(false);
+        if (ConnectionStatus)
+            remvAsstnTeam.setDisable(false);
    }
    public void checkNull_curr_mem(){
        String str = (String) currentMembers.getSelectionModel().getSelectedItem();
@@ -405,24 +504,7 @@ public class FXMLDocumentController implements Initializable {
            addAffMem.setDisable(true);
        }
    }
-    public void assigned_mem_team() throws Exception{
-        Connector conn = new Connector();
-        
-        itemStatus.setItems(statusList);
-            ResultSet myRs1 = conn.myStmt.executeQuery("Select * from members");
-            while(myRs1.next()){
-                avMembsList_combo.add(myRs1.getString("member"));
-            }
-            assgToMember.setItems(avMembsList_combo);
-            ResultSet myRs2 = conn.myStmt.executeQuery("Select * from teams");
-            while(myRs2.next()){
-                avTeamsList_combo.add(myRs2.getString("team"));
-            }
-            assgToTeam.setItems(avTeamsList_combo);
-    }
-    /*
-    the below code is for console
-     */
+    
     ObservableList<String> consoleList = FXCollections.observableArrayList();
     /*
     this is for members    
@@ -435,33 +517,18 @@ public class FXMLDocumentController implements Initializable {
     ObservableList<String> membersList = FXCollections.observableArrayList();
 
     @FXML
-    public void addToList_mem(ActionEvent event) {
+    public void addToList_mem(ActionEvent event) throws Exception{
         String memb = member.getText();
-        try {
-            Connector conn = new Connector();
-            String sql = "insert into members"
-                    + "(member)"
-                    + "values('" + memb + "');";
-            conn.myStmt.executeUpdate(sql);
-            getMembers();
-            member.setText("");
-        } catch (Exception e) {
-            System.err.println(e);
-        }
+        Members.addMemberToList(memb);
+        getMembers();
+        member.setText("");
     }
 
     @FXML
-    public void removeMember(ActionEvent event) {
+    public void removeMember(ActionEvent event) throws Exception{
         String selectedMember = (String) membersView.getSelectionModel().getSelectedItem();
-        try {
-            Connector conn = new Connector();
-            String sql = "delete from members where member= '" + selectedMember + "';";
-            conn.myStmt.executeUpdate(sql);
-            getMembers();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
+        Members.removeMember(selectedMember);
+        getMembers();
     }
 
     ObservableList<String> availTeams = FXCollections.observableArrayList();
@@ -476,20 +543,11 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     public void onActionMember() throws Exception {
         selectedMem = (String) membersView.getSelectionModel().getSelectedItem();
-        Connector conn = new Connector();
-        String sql = "SELECT team FROM teams where team  not in (select teams from teams_members where members ='" + selectedMem + "');";
-        ResultSet myRes = conn.myStmt.executeQuery(sql);
         availTeams.clear();
-        while (myRes.next()) {
-            availTeams.add(myRes.getString("team"));
-        }
+        availTeams = Members.available_Teams(selectedMem);
         availableTeams.setItems(availTeams);
         currTeams.clear();
-        sql = "SELECT team FROM teams where team in (select teams from teams_members where members ='" + selectedMem + "');";
-        myRes = conn.myStmt.executeQuery(sql);
-        while (myRes.next()) {
-            currTeams.add(myRes.getString("team"));
-        }
+        currTeams = Members.current_teams(selectedMem);
         currentTeams.setItems(currTeams);
     }
 
@@ -497,9 +555,7 @@ public class FXMLDocumentController implements Initializable {
     private void addAffiliation_mem(ActionEvent event) throws Exception {
         selectedMem = (String) membersView.getSelectionModel().getSelectedItem();
         String selectedTeam = (String) availableTeams.getSelectionModel().getSelectedItem();
-        Connector conn = new Connector();
-        String sql = "insert into teams_members values('" + selectedTeam + "', '" + selectedMem + "');";
-        conn.myStmt.executeUpdate(sql);
+        Members.AddAfffiliation(selectedMem, selectedTeam);
         currTeams.add(selectedTeam);
         availTeams.remove(selectedTeam);
         availableTeams.setItems(availTeams);
@@ -512,9 +568,7 @@ public class FXMLDocumentController implements Initializable {
     private void removeAffiliation_mem(ActionEvent event) throws Exception {
         selectedMem = (String) membersView.getSelectionModel().getSelectedItem();
         String selectedTeam = (String) currentTeams.getSelectionModel().getSelectedItem();
-        Connector conn = new Connector();
-        String sql = "delete from teams_members where members = '" + selectedMem + "' and teams = '" + selectedTeam + "';";
-        conn.myStmt.executeUpdate(sql);
+        Members.removeAffiliation(selectedMem, selectedTeam);
         availTeams.add(selectedTeam);
         availableTeams.setItems(availTeams);
         currTeams.remove(selectedTeam);
@@ -641,14 +695,70 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void onClickConsoleItems() throws Exception{
         String selectedConsoleItem = (String) consoleItemsView.getSelectionModel().getSelectedItem();
-        ConsoleScreen.getDetails(selectedConsoleItem);
-        name_Console.setText(ConsoleScreen.name);
-        desc_Console.setText(ConsoleScreen.description);
-        res_Console.setText(ConsoleScreen.resolution);
-        duedate_Console.setText(ConsoleScreen.duedate);
-        creationDate_Console.setText(ConsoleScreen.creationDate);
-        status_Console.setText(ConsoleScreen.status);
-        assgnMem_Console.setText(ConsoleScreen.assignedMember);
-        assgnTeam_Console.setText(ConsoleScreen.assignedTeam);
+        if (ConnectionStatus){
+            ConsoleScreen.getDetails(selectedConsoleItem);
+            name_Console.setText(ConsoleScreen.name);
+            desc_Console.setText(ConsoleScreen.description);
+            res_Console.setText(ConsoleScreen.resolution);
+            duedate_Console.setText(ConsoleScreen.duedate);
+            creationDate_Console.setText(ConsoleScreen.creationDate);
+            status_Console.setText(ConsoleScreen.status);
+            assgnMem_Console.setText(ConsoleScreen.assignedMember);
+            assgnTeam_Console.setText(ConsoleScreen.assignedTeam);
+        } else {
+            myHash = readFromFile();
+            System.out.println(myHash);
+            ArrayList<String> sfl = new ArrayList<String>();
+            sfl = myHash.get(selectedConsoleItem);
+//            System.out.println("arrr-->"+sfl+"," +selectedConsoleItem);
+            name_Console.setText(selectedConsoleItem);
+            desc_Console.setText(sfl.get(0));
+            res_Console.setText(sfl.get(1));
+            duedate_Console.setText(sfl.get(3));
+            creationDate_Console.setText(sfl.get(2));
+            status_Console.setText(sfl.get(6));
+            assgnMem_Console.setText(sfl.get(4));
+            assgnTeam_Console.setText(sfl.get(5));
+        }
     }
+    
+    public void writeIntoFile(Hashtable<String, ArrayList<String>> list) throws IOException{    
+       OutputStream ops = new FileOutputStream("actionItems.xml");;
+       ObjectOutputStream objOps = new ObjectOutputStream(ops);;
+       try {
+//           ops = new FileOutputStream("actionItems.xml");
+//           objOps = new ObjectOutputStream(ops);
+           objOps.writeObject(list);
+           objOps.flush();
+       } catch (FileNotFoundException e) {
+           e.printStackTrace();
+       } catch (IOException e) {
+           e.printStackTrace();
+       } finally{
+           try{
+               if(objOps != null) objOps.close();
+           } catch (Exception ex){
+                
+           }
+       }
+    }
+    
+    public Hashtable<String, ArrayList<String>> readFromFile() {
+       Hashtable<String, ArrayList<String>> list = new Hashtable<>();
+       try {
+          FileInputStream fileIn = new FileInputStream("actionItems.xml");
+          ObjectInputStream in = new ObjectInputStream(fileIn);
+          list = (Hashtable) in.readObject();
+          in.close();
+          fileIn.close();
+       } catch(IOException i) {
+          i.printStackTrace();
+       } catch(ClassNotFoundException c) {
+          System.out.println(c);
+          c.printStackTrace();
+       }
+       
+       return list;
+   }
+    
 }
