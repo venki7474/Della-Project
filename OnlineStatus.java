@@ -40,9 +40,9 @@ public class OnlineStatus {
         connection.setRequestMethod("GET");
         connection.connect();
         int code = connection.getResponseCode();
-        System.out.println("Response code of the object is "+code);
+//        System.out.println("Response code of the object is "+code);
         if (code==200) {
-            System.out.println("OK");
+//            System.out.println("OK");
             return true;
         } else {
             return false;
