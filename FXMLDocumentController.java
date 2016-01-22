@@ -178,6 +178,9 @@ public class FXMLDocumentController implements Initializable {
             if ( flag_f ) {
                 updateButton.setDisable(flag_f);
                 deleteButton.setDisable(flag_f);
+            } else {
+                Connector conn = new Connector();
+                conn.myStmt.executeUpdate("insert into flag values=('"+selectedItem+"');");
             }
         } else{
             disp_hash = readFromFile();
