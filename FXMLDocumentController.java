@@ -160,10 +160,12 @@ public class FXMLDocumentController implements Initializable {
             }
             
     }
-    
+    String index = "";
     @FXML
     private void onActionCombo(ActionEvent event) throws Exception{
         String selectedItem = (String) actionItemCombo.getSelectionModel().getSelectedItem();
+        ObservableList<String> allListitems = ActionItems.getItemlist();
+        int readWrite = 0;
         if (ConnectionStatus){
             ActionItems.OnActionCombo(selectedItem);
             itemName.setText(ActionItems.name1);
@@ -174,14 +176,33 @@ public class FXMLDocumentController implements Initializable {
             assgToMember.setValue(ActionItems.memAssigned1);
             assgToTeam.setValue(ActionItems.teamAssigned1);
             itemStatus.setValue(ActionItems.actionStatus1);
-            flag_f = checkFlag(selectedItem);
-            if ( flag_f ) {
-                updateButton.setDisable(flag_f);
-                deleteButton.setDisable(flag_f);
-            } else {
-                Connector conn = new Connector();
-                conn.myStmt.executeUpdate("insert into flag values=('"+selectedItem+"');");
+            
+            if ( selectedItem != null) {
+                String sel1 = (String) actionItemCombo.getSelectionModel().getSelectedItem();
+                String sel2 = (String) actionItemCombo.getSelectionModel().getSelectedItem();
+                
+               readWrite= Integer.parseInt(ActionItems.access) ;
+               if (readWrite == 1){
+                   updateButton.setDisable(true);
+                   deleteButton.setDisable(true);
+               }
+               if (index.equals("") && !(index.equals(sel2))){
+                   readWrite = 1;
+                   index = sel2;
+                   ActionItems.updateAccess(readWrite, sel2);
+               }
+               if (!index.equals(sel2)) {
+                   if (allListitems.contains(index)){
+                       readWrite = 0 ;
+                       ActionItems.updateAccess(readWrite, index);
+                       index = sel2;
+                       readWrite = 1;
+                       ActionItems.updateAccess(readWrite, sel2);
+                   }
+               }
+                
             }
+            
         } else{
             disp_hash = readFromFile();
             ArrayList<String> sfl = disp_hash.get(selectedItem);
@@ -300,15 +321,9 @@ public class FXMLDocumentController implements Initializable {
         alert.setContentText("Do you want to save these Action Items? Click Ok to save or Click Cancel to ignore Changes");
         Optional<ButtonType> result = alert.showAndWait();
         try {
-            Connector connection = new Connector();
-            connection.myStmt = connection.myConn.createStatement();
             if (result.get() == ButtonType.OK) {
-                //connection.myStmt.executeUpdate("truncate flag");
-                //connection.myStmt.executeUpdate("insert into flag values('1')");
-//                connection.myStmt.executeUpdate("truncate item_sample");
                 exit(0);
             } else {
-//                connection.myStmt.executeUpdate("truncate item_sample");
                 exit(0);
             }
         } catch (Exception e) {
@@ -364,7 +379,7 @@ public class FXMLDocumentController implements Initializable {
                         Connector conn = new Connector();
 
                         
-                        ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample ;");
+                        ResultSet myRs = conn.myStmt.executeQuery("Select * from action_item ;");
                         while (myRs.next()) {
                             ArrayList<String> arrList = new ArrayList<String>();
                             arrList.add(myRs.getString("description"));
