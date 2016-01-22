@@ -19,14 +19,15 @@ import javafx.collections.ObservableList;
 public class ActionItems {
     
     static Connector conn = new Connector();
-    static String name1="", desc1="", resolution1="", duedate1="", creationDate1="", actionStatus1="", memAssigned1="", teamAssigned1="";
+    static String name1="", desc1="", resolution1="", duedate1="", creationDate1="", actionStatus1="", memAssigned1="", 
+            teamAssigned1="", access = "";
     static ObservableList<String> itemsList = FXCollections.observableArrayList();
     public static void updateActionItem(String selectedItem, String name, String desc,
             String resolution,String duedate,String creationDate,
             String actionStatus,String memAssigned,String teamAssigned ) throws SQLException {
         conn.myStmt = conn.myConn.createStatement();
-        conn.myStmt.executeUpdate("delete from item_sample where name = '" + selectedItem + "';");
-            String sql = "insert into item_sample"
+        conn.myStmt.executeUpdate("delete from action_item where name = '" + selectedItem + "';");
+            String sql = "insert into action_item"
                     + "(name, description, resolution, creationdate, duedate, status, assignedMember, assignedTeam)"
                     + "values('" + name + "','" + desc + "','" + resolution + "','" + creationDate + "','"+duedate+"', '"
                     + actionStatus+"', '"+memAssigned+ "', '"+teamAssigned+"')";
@@ -36,7 +37,7 @@ public class ActionItems {
             String resolution,String duedate,String creationDate,
             String actionStatus,String memAssigned,String teamAssigned ) throws SQLException{
             conn.myStmt = conn.myConn.createStatement();
-            String sql = "insert into item_sample"
+            String sql = "insert into action_item"
                     + "(name, description, resolution, creationdate, duedate, status, assignedMember, assignedTeam)"
                     + "values('" + name + "','" + desc + "','" + resolution + "','" + creationDate + "','"+duedate+"', '"
                     + actionStatus+"', '"+memAssigned+ "', '"+teamAssigned+"')";
@@ -44,10 +45,10 @@ public class ActionItems {
     }
     public static void deleteActionItem(String selectedItem) throws SQLException{
         conn.myStmt = conn.myConn.createStatement();
-        conn.myStmt.executeUpdate("delete from item_sample where name = '" + selectedItem + "';");
+        conn.myStmt.executeUpdate("delete from action_item where name = '" + selectedItem + "';");
     }
     public static void OnActionCombo(String selectedItem) throws SQLException{
-        ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample where name='"+selectedItem+"';");
+        ResultSet myRs = conn.myStmt.executeQuery("Select * from action_item where name='"+selectedItem+"';");
         while(myRs.next()) {
             name1 = myRs.getString("name");
             desc1 = myRs.getString("description");
@@ -57,15 +58,21 @@ public class ActionItems {
             memAssigned1 = myRs.getString("assignedMember");
             teamAssigned1 = myRs.getString("assignedTeam");
             actionStatus1 = myRs.getString("status");
+            access = myRs.getString("access");
         }
     }
     public static ObservableList<String> getItemlist() throws SQLException{
-        ResultSet myRs = conn.myStmt.executeQuery("Select * from item_sample");
+        ResultSet myRs = conn.myStmt.executeQuery("Select * from action_item");
         itemsList = FXCollections.observableArrayList();
         while (myRs.next()) {
             itemsList.add(myRs.getString("name"));
         }     
         return itemsList;
+    }
+    
+    public static void updateAccess(int accessNum, String str) throws SQLException{
+        String sql = "Update action_item set access = "+accessNum+"where name='"+str+";";
+        conn.myStmt.executeUpdate(sql);
     }
  
     
