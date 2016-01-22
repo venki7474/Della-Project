@@ -152,10 +152,10 @@
       <Text layoutX="26.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select an action item from the pull down list above to examine and update it" wrappingWidth="628.39453125" />
       <ToolBar fx:id="actionButtons" layoutX="14.0" layoutY="560.0" prefHeight="71.0" prefWidth="838.0">
         <items>
-          <Button mnemonicParsing="false" onAction="#updateAction" prefHeight="39.0" prefWidth="226.0" text="Update this action item" />
+          <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updateAction" prefHeight="39.0" prefWidth="226.0" text="Update this action item" />
             <Button mnemonicParsing="false" onAction="#clearFormAction" prefHeight="39.0" prefWidth="171.0" text="Clear this form" />
             <Button fx:id="createItem" mnemonicParsing="false" onAction="#createActionItem" prefHeight="39.0" prefWidth="209.0" text="Create new Action Item" />
-            <Button mnemonicParsing="false" onAction="#deleteActionItem" prefHeight="39.0" prefWidth="175.0" text="Delete this item" />
+            <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteActionItem" prefHeight="39.0" prefWidth="175.0" text="Delete this item" />
         </items>
       </ToolBar>
                   <Text layoutX="373.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Action Items">
@@ -175,8 +175,8 @@
                      </font>
                   </Label>
                   <ComboBox fx:id="itemStatus" layoutX="695.0" layoutY="402.0" prefHeight="39.0" prefWidth="113.0" />
-                  <ComboBox fx:id="assgToMember" layoutX="679.0" layoutY="466.0" prefWidth="150.0" />
-                  <ComboBox fx:id="assgToTeam" layoutX="677.0" layoutY="524.0" prefWidth="150.0" />
+                  <ComboBox fx:id="assgToMember" layoutX="679.0" layoutY="466.0" onAction="#displayingMemToTeam" prefWidth="150.0" />
+                  <ComboBox fx:id="assgToTeam" layoutX="677.0" layoutY="524.0" onAction="#displayingTeamToMem" prefWidth="150.0" />
                   <Circle fx:id="onlineLabel2" fill="#33c905" layoutX="618.0" layoutY="23.0" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
                   <Circle fx:id="offlineLabel2" fill="RED" layoutX="715.0" layoutY="21.0" radius="11.0" stroke="BLACK" strokeType="INSIDE" />
    </children>
