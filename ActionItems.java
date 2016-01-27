@@ -71,7 +71,7 @@ public class ActionItems {
     }
     
     public static void updateAccess(int accessNum, String str) throws SQLException{
-        String sql = "Update action_item set access = "+accessNum+"where name='"+str+";";
+        String sql = "Update action_item set access = '"+accessNum+"' where name='"+str+"';";
         conn.myStmt.executeUpdate(sql);
     }
  
