@@ -35,7 +35,7 @@ public class OnlineStatus {
 	    System.setProperty("http.proxyHost", "10.10.10.3");
             System.setProperty("http.proxyPort", "3128");
             
-        URL url = new URL("http://google.com");
+        URL url = new URL("http://www.bing.com");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.connect();
