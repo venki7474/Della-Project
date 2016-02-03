@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import static java.lang.System.exit;
 import java.net.URL;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Clock;
@@ -83,7 +84,7 @@ public class FXMLDocumentController implements Initializable {
     public Circle onlineLabel1, onlineLabel2, onlineLabel3, onlineLabel4;
     @FXML
     public Circle offlineLabel1, offlineLabel2, offlineLabel3, offlineLabel4;
-    public boolean ConnectionStatus;
+    public boolean ConnectionStatus ;
     
     
     
@@ -123,6 +124,8 @@ public class FXMLDocumentController implements Initializable {
         assgToTeam.setValue("");
         itemStatus.setValue("open");
         currentDate.setText(format.format(dateobj));
+        updateButton.setDisable(false);
+        deleteButton.setDisable(false);
     }
 
     @FXML
@@ -157,7 +160,7 @@ public class FXMLDocumentController implements Initializable {
             deleteButton.setDisable(false);
             
     }
-    String index = "";
+    String lockedItem = "";
     int flag = 0;
     @FXML
     private void onActionCombo(ActionEvent event) throws Exception{
@@ -165,6 +168,19 @@ public class FXMLDocumentController implements Initializable {
         ObservableList<String> allListitems = ActionItems.getItemlist();
         int readWrite = 0;
         if (ConnectionStatus){
+            if (!(lockedItem == null)){
+                unLock(lockedItem);
+            }
+            if(isThere(selectedItem)) {
+                updateButton.setDisable(true);  
+                deleteButton.setDisable(true);
+            } else {
+                updateButton.setDisable(false);  
+                deleteButton.setDisable(false);
+                lockedItem = selectedItem;
+                System.out.println("&&&&&&&&&&&&&&&&&&& "+lockedItem);
+                storeActionName(selectedItem);
+            }
             ActionItems.OnActionCombo(selectedItem);
             itemName.setText(ActionItems.name1);
             itemDesc.setText(ActionItems.desc1);
@@ -173,53 +189,7 @@ public class FXMLDocumentController implements Initializable {
             currentDate.setText(ActionItems.creationDate1);
             assgToMember.setValue(ActionItems.memAssigned1);
             assgToTeam.setValue(ActionItems.teamAssigned1);
-            itemStatus.setValue(ActionItems.actionStatus1);
-            
-            if ( selectedItem != null) {
-                String sel1 = (String) actionItemCombo.getSelectionModel().getSelectedItem();
-                String sel2 = (String) actionItemCombo.getSelectionModel().getSelectedItem();
-               ActionItems.OnActionCombo(sel1);
-                
-               readWrite= Integer.parseInt(ActionItems.access) ;
-               System.out.println("accessvalue :"+readWrite);
-               if (readWrite == 1){
-                   updateButton.setDisable(true);
-                   deleteButton.setDisable(true);
-               } else {
-                   updateButton.setDisable(false);
-                   deleteButton.setDisable(false);
-                   flag = 1;
-               }
-               if (index.equals("") && !(index.equals(sel2)) && flag == 1){
-                   readWrite = 1;
-                   index = sel2;
-                   System.out.println("accessvalue2 ----> :");
-                   ActionItems.updateAccess(readWrite, sel2);
-                   flag = 1;
-                   ActionItems.OnActionCombo(sel2);
-                   
-//                   int readWrite2= Integer.parseInt(ActionItems.access) ;
-//                   System.out.println("accessvalue2 ----> :"+readWrite2);
-               }
-               if (!index.equals(sel2)) {
-                   if (allListitems.contains(index)){
-                       if (flag == 1){
-                           readWrite = 0 ;
-                           ActionItems.updateAccess(readWrite, index);
-                           flag = 0;
-                       }
-                       index = sel2;
-                       readWrite = 1;
-                       ActionItems.updateAccess(readWrite, sel2);
-                       flag = 1;
-                       ActionItems.OnActionCombo(sel2);
-                       int readWrite2= Integer.parseInt(ActionItems.access) ;
-                       System.out.println("accessvalue2 ----> :"+readWrite2);
-                   }
-               }
-                
-            }
-            
+            itemStatus.setValue(ActionItems.actionStatus1);          
         } else{
             disp_hash = readFromFile();
             ArrayList<String> sfl = disp_hash.get(selectedItem);
@@ -233,15 +203,47 @@ public class FXMLDocumentController implements Initializable {
             itemStatus.setValue(sfl.get(6));
         }
     }
-    public boolean checkFlag(String str) throws Exception {
-        String sql = "select * from itemflag where itemflag='"+str+"';";
+    
+    public void storeActionName(String aName) throws SQLException {
         Connector conn = new Connector();
-        ResultSet myRes = conn.myStmt.executeQuery(sql);
-        while(myRes.next()){
+        if (ConnectionStatus) {
+            if(aName != null) {
+                    String query = "insert into Lock_ActionName values('"+aName+"');";
+                    conn.myStmt.executeUpdate(query);
+            }
+        }
+    }
+    
+    public boolean isThere(String aName) throws SQLException {
+        Connector conn = new Connector();
+        
+        ArrayList<String> ls = new ArrayList<>();
+        if (ConnectionStatus) {
+            if(aName != null) {
+                String query = "select name from Lock_ActionName";
+                ResultSet rs = conn.myStmt.executeQuery(query); 
+                while(rs.next()) {
+                    ls.add(rs.getString("name"));
+                }
+            }
+        }
+        if ((ls.contains(aName))) {
             return true;
         }
         return false;
     }
+    
+    public void unLock(String aName) throws SQLException {
+        Connector conn = new Connector();
+        if (ConnectionStatus) {
+            if(conn != null) {
+                String query = "delete from Lock_ActionName where name ='"+aName +"';";
+                 conn.myStmt.executeUpdate(query);
+            }
+           
+        }
+    } 
+    
     public void displayingMemToTeam() throws Exception {
         String selected_mem = (String) assgToMember.getSelectionModel().getSelectedItem();
         String selected_team = (String) assgToTeam.getSelectionModel().getSelectedItem();
@@ -324,6 +326,8 @@ public class FXMLDocumentController implements Initializable {
     public void refresh() throws Exception{
             consoleItemsView.setItems(ActionItems.getItemlist());
             actionItemCombo.setItems(ActionItems.getItemlist());
+            getMembers();
+            getTeams();
     }
     /**
      *  this is quit action button
@@ -340,7 +344,7 @@ public class FXMLDocumentController implements Initializable {
         try {
             if (result.get() == ButtonType.OK) {
                 Connector conn = new Connector();
-                conn.myStmt.executeUpdate("Update action_item set access = 0 ;");
+                conn.myStmt.executeUpdate("truncate lock_actionname");
                 exit(0);
             } else {
             }
@@ -354,7 +358,8 @@ public class FXMLDocumentController implements Initializable {
         // TODO
         try {
             Check_Connection();
-            
+            updateCache();
+            actionsOnConnection();
             addMemToListButton.setDisable(true);
             remvMemButton.setDisable(true);
             addTeamToListButton.setDisable(true);
@@ -363,27 +368,46 @@ public class FXMLDocumentController implements Initializable {
             remvAffMem.setDisable(true);
             addAsstnTeam.setDisable(true);
             remvAsstnTeam.setDisable(true);
-            
+//            getTeams();
             actionItemCombo.setItems(ActionItems.getItemlist());
             consoleItemsView.setItems(ActionItems.getItemlist());
             
             currentDate.setText(format.format(dateobj));
-            getMembers();
-            getTeams();
             assigned_mem_team();
             itemStatus.setItems(statusList);
             itemStatus.setValue("open");
+            
         } catch (Exception e){
             System.out.println(e);
         }
     }
+    
     Hashtable<String, ArrayList<String>> myHash = new Hashtable<String, ArrayList<String>>();
+    
     public void Check_Connection(){
-        new Timer().schedule(
-            new TimerTask() {
-            @Override
-            public void run() {
+        final long timeInterval = 10000;
+        Runnable runn;
+        runn = () -> {
+            while(true){
+                System.out.println("in check_connection");
                 ConnectionStatus = OnlineStatus.checkStatus();
+                try {
+                   Thread.sleep(timeInterval);
+                } catch (InterruptedException e) {
+                   e.printStackTrace();
+                }
+            }
+        };
+        Thread thread = new Thread(runn);
+	thread.start();          
+    }
+    int init_flag = 0;
+    public void actionsOnConnection(){
+           final long timeInterval = 10000;
+           Runnable runnable;
+           runnable = () -> {
+           while (true) {
+                
                 System.out.println("Status:" + ConnectionStatus );
                 if(ConnectionStatus) {
                     onlineLabel1.setFill(Color.GREEN);
@@ -403,8 +427,15 @@ public class FXMLDocumentController implements Initializable {
                     remvAffMem.setDisable(false);
                     addAsstnTeam.setDisable(false);
                     remvAsstnTeam.setDisable(false);
-                    updateCache();
-//                    actionButtons.setDisable(false);
+                    if ( init_flag == 0){
+                        try{
+                            getTeams();
+                            getMembers();
+                        } catch(Exception e){
+                            System.out.println("main_della.FXMLDocumentController.actionsOnConnection()");
+                        }
+                        init_flag += 1;
+                    }
                     
                 } else {
                    onlineLabel1.setFill(Color.WHITE);
@@ -416,18 +447,29 @@ public class FXMLDocumentController implements Initializable {
                    offlineLabel3.setFill(Color.RED);
                    offlineLabel4.setFill(Color.RED);
                    disableButtons();
-                   }
-
+                   
+                }
+                try {
+                   Thread.sleep(timeInterval);
+                } catch (InterruptedException e) {
+                   e.printStackTrace();
+                }
             }
-            }, 0, 100);
+        };
+	Thread thread = new Thread(runnable);
+	thread.start();
     }
+    
     public void updateCache(){
-        new Timer().schedule(
-            new TimerTask() {
-            @Override
-            public void run() {
+        final long timeInterval = 10000;
+           Runnable runnable;
+           runnable = () -> {
+           while (true) {
                 try{
                     if (ConnectionStatus){
+//                        getMembers();
+//                        getTeams();
+                        System.out.println("in check_connection");
                         Connector conn = new Connector();
                         ResultSet myRs = conn.myStmt.executeQuery("Select * from action_item ;");
                         while (myRs.next()) {
@@ -449,24 +491,16 @@ public class FXMLDocumentController implements Initializable {
                 }catch(Exception e){
                 }
 //                Check_Connection();
+                try {
+                   Thread.sleep(timeInterval);
+               } catch (InterruptedException e) {
+                   e.printStackTrace();
+               }
             }
-            }, 0, 10000);
-    }
-    public void checkOnlineUser() throws Exception{
-        Connector conn = new Connector();
-            String statusFlag ="";
-//            conn.myStmt = conn.myConn.createStatement();
-//            conn.myStmt.executeUpdate("insert into item_sample select * from items;");
-            ResultSet myRs1 = conn.myStmt.executeQuery("Select flag_id from flag");
-            while(myRs1.next()){
-                statusFlag = myRs1.getString("flag_id");
-            }
-            if (statusFlag.equals("2")){
-                disableButtons();
-            } else {
-                conn.myStmt.executeUpdate("truncate flag");
-                conn.myStmt.executeUpdate("insert into flag values('1')");
-            }
+            };
+
+	    Thread thread = new Thread(runnable);
+	    thread.start();
     }
     
     public void disableButtons(){
@@ -563,21 +597,22 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private ListView membersView;
 
+    Members memb_1 = new Members();
+    
     ObservableList<String> membersList = FXCollections.observableArrayList();
 
     @FXML
     public void addToList_mem(ActionEvent event) throws Exception{
         String memb = member.getText();
-        Members.addMemberToList(memb);
+        memb_1.addMemberToList(memb);
         getMembers();
-        refresh();
         member.setText("");
     }
 
     @FXML
     public void removeMember(ActionEvent event) throws Exception{
         String selectedMember = (String) membersView.getSelectionModel().getSelectedItem();
-        Members.removeMember(selectedMember);
+        memb_1.removeMember(selectedMember);
         getMembers();
     }
 
@@ -593,30 +628,37 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     public void onActionMember() throws Exception {
         selectedMem = (String) membersView.getSelectionModel().getSelectedItem();
-        availTeams.clear();
-        availTeams = Members.available_Teams(selectedMem);
-        availableTeams.setItems(availTeams);
-        currTeams.clear();
-        currTeams = Members.current_teams(selectedMem);
-        currentTeams.setItems(currTeams);
+        if (selectedMem != null) {
+            availTeams = FXCollections.observableArrayList();
+            availTeams = Members.available_Teams(selectedMem);
+            availableTeams.setItems(availTeams);
+
+            currTeams = FXCollections.observableArrayList();
+            currTeams = Members.current_teams(selectedMem);
+            currentTeams.setItems(currTeams);
+            getMembers();
+            getTeams();
+        }
     }
 
     @FXML
     private void addAffiliation_mem(ActionEvent event) throws Exception {
-        selectedMem = (String) membersView.getSelectionModel().getSelectedItem();
-        String selectedTeam = (String) availableTeams.getSelectionModel().getSelectedItem();
-        Members.AddAfffiliation(selectedMem, selectedTeam);
-        currTeams.add(selectedTeam);
-        availTeams.remove(selectedTeam);
-        availableTeams.setItems(availTeams);
-        currentTeams.setItems(currTeams);
-        refresh();
+        selectedMem = membersView.getSelectionModel().getSelectedItem().toString();
+        if (selectedMem != null){
+            String selectedTeam = (String) availableTeams.getSelectionModel().getSelectedItem();
+            Members.AddAffiliation(selectedMem, selectedTeam);
+            currTeams.add(selectedTeam);
+            availTeams.remove(selectedTeam);
+            availableTeams.setItems(availTeams);
+            currentTeams.setItems(currTeams);
+            refresh();
+        }
 
     }
 
     @FXML
     private void removeAffiliation_mem(ActionEvent event) throws Exception {
-        selectedMem = (String) membersView.getSelectionModel().getSelectedItem();
+        selectedMem = membersView.getSelectionModel().getSelectedItem().toString() ;
         String selectedTeam = (String) currentTeams.getSelectionModel().getSelectedItem();
         Members.removeAffiliation(selectedMem, selectedTeam);
         availTeams.add(selectedTeam);
@@ -626,7 +668,7 @@ public class FXMLDocumentController implements Initializable {
         refresh();
     }
 
-    public void getMembers() throws Exception {
+    public void getMembers() throws Exception,SQLException {
         if (ConnectionStatus){
             Connector conn = new Connector();
             String sql = "select member from members;";
@@ -636,7 +678,8 @@ public class FXMLDocumentController implements Initializable {
                 membersList.add(myRes.getString("member"));
             }
             membersView.setItems(membersList);
-            refresh();
+            myRes.close();
+//            refresh();
         }
     }
 
@@ -658,22 +701,29 @@ public class FXMLDocumentController implements Initializable {
         Connector conn = new Connector();
         String sql = "insert into teams values('" + teamStr + "');";
         conn.myStmt.executeUpdate(sql);
-        getTeams();
-        refresh();
+        ResultSet myRes = conn.myStmt.executeQuery("select * from teams;");
+        teamsList = FXCollections.observableArrayList();
+            while (myRes.next()) {
+                teamsList.add(myRes.getString("team"));
+            }
+            teamsView.setItems(teamsList);
+//        getTeams();
+//        refresh();
         team.setText("");
     }
 
     public void getTeams() throws Exception {
         if (ConnectionStatus){
             Connector conn = new Connector();
-            String sql = "select * from teams;";
+            String sql = "select team from teams;";
             ResultSet myRes = conn.myStmt.executeQuery(sql);
             teamsList = FXCollections.observableArrayList();
             while (myRes.next()) {
                 teamsList.add(myRes.getString("team"));
             }
             teamsView.setItems(teamsList);
-            refresh();
+            myRes.close();
+//            refresh();
         }
     }
 
@@ -681,10 +731,10 @@ public class FXMLDocumentController implements Initializable {
     public void removeFromList_team(ActionEvent event) throws Exception {
         teamSelected = (String) teamsView.getSelectionModel().getSelectedItem();
         Connector conn = new Connector();
-        String sql = "delete from teams where team= '" + teamSelected + "';";
+        String sql = "delete from teams where team = '" + teamSelected + "';";
         conn.myStmt.executeUpdate(sql);
         getTeams();
-        refresh();
+//        refresh();
         team.setText(teamSelected);
     }
     
@@ -710,6 +760,9 @@ public class FXMLDocumentController implements Initializable {
             currMembersList.add(myRes.getString("member"));
         } 
         currentMembers.setItems(currMembersList);
+        
+        getTeams();
+        getMembers();
     }
     
     @FXML
