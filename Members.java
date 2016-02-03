@@ -17,13 +17,13 @@ import javafx.collections.ObservableList;
 public class Members {
     public static Connector conn = new Connector();
     
-    public static void addMemberToList(String member) throws Exception{
+    public static void addMemberToList(String member) throws SQLException{
         String sql = "insert into members"
                     + "(member)"
                     + "values('" + member + "');";
             conn.myStmt.executeUpdate(sql);
     }
-    public static void removeMember(String member) throws Exception{
+    public static void removeMember(String member) throws SQLException{
         String sql = "delete from members where member= '" + member + "';";
         conn.myStmt.executeUpdate(sql);
     }
@@ -47,11 +47,11 @@ public class Members {
         }
         return currTeams;
     }
-    public static void AddAfffiliation(String member, String team) throws Exception {
+    public static void AddAffiliation(String member, String team) throws Exception {
         String sql = "insert into teams_members values('" + team + "', '" + member + "');";
         conn.myStmt.executeUpdate(sql);
     }
-    public static void removeAffiliation(String member, String team) throws SQLException{
+    public static void removeAffiliation(String member, String team) throws Exception{
         String sql = "delete from teams_members where members = '" + member + "' and teams = '" + team + "';";
         conn.myStmt.executeUpdate(sql);
     }
