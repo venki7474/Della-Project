@@ -12,7 +12,7 @@ import javafx.collections.ObservableList;
  *
  * @author Chotu
  */
-public class teams {
+public class Teams {
     public static 
     ObservableList<String> teamsList = FXCollections.observableArrayList();
     public static void addToList(String team){
