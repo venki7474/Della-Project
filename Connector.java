@@ -20,6 +20,7 @@ public class Connector {
         try {
             //1. Getting a connection to database
             myConn = DriverManager.getConnection("jdbc:mysql://10.10.10.167:3306/azra", "root", "123");
+//            myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sample", "root", "venki_7474");
             //2.creating the  statement
             myStmt = myConn.createStatement();
         } catch(Exception e){
